@@ -29,7 +29,7 @@ public class EnemyStats : CharacterStats
         //适当修改，暴击率等出现问题需要后期修改
         Modify(strength);
         Modify(agility);
-        Modify(intellgence);
+        Modify(intelligence);
         Modify(vitality);
 
         Modify(damage);

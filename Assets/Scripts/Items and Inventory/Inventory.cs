@@ -15,8 +15,8 @@ public class Inventory : MonoBehaviour
     public List<InventoryItem> inventory;
     public Dictionary<ItemData, InventoryItem> inventoryDictionary;
 
-    public List <InventoryItem> stash;
-    public Dictionary <ItemData, InventoryItem> stashDictionary;
+    public List<InventoryItem> stash;
+    public Dictionary<ItemData, InventoryItem> stashDictionary;
 
 
     [Header("Inventory UI")]
@@ -31,6 +31,9 @@ public class Inventory : MonoBehaviour
 
     [Header("Item cooldown")]
     private float lastTimeUsedFlask;
+
+    private float flaskCooldown;
+    private float armorCooldown;
 
     private void Awake()
     {
@@ -140,10 +143,10 @@ public class Inventory : MonoBehaviour
     {
         if (_item.itemType == ItemType.Equipment)
         {
-           AddToInventory(_item);
+            AddToInventory(_item);
 
         }
-        else if(_item.itemType==ItemType.Material)
+        else if (_item.itemType == ItemType.Material)
         {
             AddToStash(_item);
         }
@@ -165,7 +168,7 @@ public class Inventory : MonoBehaviour
 
 
 
-            }
+        }
     }
 
     private void AddToInventory(ItemData _item)
@@ -184,7 +187,7 @@ public class Inventory : MonoBehaviour
 
     public void RemoveItem(ItemData _item)
     {
-        if(inventoryDictionary.TryGetValue(_item,out InventoryItem value))
+        if (inventoryDictionary.TryGetValue(_item, out InventoryItem value))
         {
             if (value.stackSize <= 1)
             {
@@ -196,7 +199,7 @@ public class Inventory : MonoBehaviour
         }
         if (stashDictionary.TryGetValue(_item, out InventoryItem stashValue))
         {
-            if(stashValue.stackSize<=1)
+            if (stashValue.stackSize <= 1)
             {
                 stash.Remove(stashValue);
                 stashDictionary.Remove(_item);
@@ -206,13 +209,13 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public bool CanCraft(ItemData_Equipment _itemToCraft,List<InventoryItem>_requireMaterials)
+    public bool CanCraft(ItemData_Equipment _itemToCraft, List<InventoryItem> _requireMaterials)
     {
-            List<InventoryItem> materialsToRemove=new List<InventoryItem>();
+        List<InventoryItem> materialsToRemove = new List<InventoryItem>();
 
         for (int i = 0; i < _requireMaterials.Count; i++)
         {
-            if (stashDictionary.TryGetValue(_requireMaterials[i].date,out InventoryItem stashValue))
+            if (stashDictionary.TryGetValue(_requireMaterials[i].date, out InventoryItem stashValue))
             {
                 //加使用材料
                 if (stashValue.stackSize < _requireMaterials[i].stackSize)
@@ -260,21 +263,24 @@ public class Inventory : MonoBehaviour
     {
         ItemData_Equipment currentFlask = GetEquipmentType(EquipmentType.Flask);
 
-        bool canUseFlask = Time.deltaTime > lastTimeUsedFlask + currentFlask.itemCooldown;
 
         if (currentFlask == null)
             return;
 
-        if(canUseFlask)
+        bool canUseFlask = Time.deltaTime > lastTimeUsedFlask + flaskCooldown;
+
+        if (canUseFlask)
         {
+            flaskCooldown = currentFlask.itemCooldown;
             currentFlask.Effect(null);
-            lastTimeUsedFlask=Time.deltaTime;
+            lastTimeUsedFlask = Time.deltaTime;
+
         }
         else
         {
             Debug.Log("药剂正在冷却！");
         }
     }
-
+  
 
 }

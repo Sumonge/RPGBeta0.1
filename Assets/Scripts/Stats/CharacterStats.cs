@@ -1,4 +1,5 @@
 
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class CharacterStats : MonoBehaviour
     [Header("Major stats")]
     public Stat strength;//暴击伤害
     public Stat agility;//暴击率
-    public Stat intellgence;//法抗
+    public Stat intelligence;//法抗
     public Stat vitality;//雪莲增加
 
     [Header("Offsive stats")]
@@ -82,6 +83,21 @@ public class CharacterStats : MonoBehaviour
             ApplyIgniteDamage();
     }
 
+    public virtual void IncreaseStatBy(int _modifier,float _duration,Stat _statToModify)
+    {
+        StartCoroutine(StatModCoroutine(_modifier, _duration, _statToModify));
+    }
+    private IEnumerator StatModCoroutine(int _modifier, float _duration, Stat _statToModify)
+    {
+        _statToModify.AddModifier(_modifier);
+
+        yield return new WaitForSeconds(_duration);
+
+        _statToModify.RemoveModifier(_modifier);
+
+
+    }
+
     public virtual void DoDamage(CharacterStats _targetStats)
     {
 
@@ -98,6 +114,7 @@ public class CharacterStats : MonoBehaviour
         _targetStats.TakeDamage(totalDamage);
         //DoMagicDamage(_targetStats);
         //如果武器附魔则造成魔法伤害
+        DoMagicDamage(_targetStats);//移除火系伤害如果想的话要删掉这一行
     }
     #region Magic and ailemnts
     public virtual void DoMagicDamage(CharacterStats _targetStates)
@@ -107,7 +124,7 @@ public class CharacterStats : MonoBehaviour
         int _iceDamage = iceDamage.GetValue();
         int _lightDamage = lightingDamage.GetValue();
 
-        int totalMagicakDamage = _fireDamage + _iceDamage + _lightDamage + intellgence.GetValue();
+        int totalMagicakDamage = _fireDamage + _iceDamage + _lightDamage + intelligence.GetValue();
 
         totalMagicakDamage = CheckTargetResistance(_targetStates, totalMagicakDamage);
         _targetStates.TakeDamage(totalMagicakDamage);
@@ -318,7 +335,7 @@ public class CharacterStats : MonoBehaviour
     }
     private int CheckTargetResistance(CharacterStats _targetStates, int totalMagicakDamage)
     {
-        totalMagicakDamage -= _targetStates.magicResistance.GetValue() + (_targetStates.intellgence.GetValue() * 3);
+        totalMagicakDamage -= _targetStates.magicResistance.GetValue() + (_targetStates.intelligence.GetValue() * 3);
         totalMagicakDamage = Mathf.Clamp(totalMagicakDamage, 0, int.MaxValue);
         return totalMagicakDamage;
     }

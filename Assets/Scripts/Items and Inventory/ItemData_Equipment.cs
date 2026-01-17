@@ -59,7 +59,7 @@ public class ItemData_Equipment : ItemData
 
         playerStats.strength.AddModifier(strength);
         playerStats.agility.AddModifier(agility);
-        playerStats.intellgence.AddModifier(intellgence);
+        playerStats.intelligence.AddModifier(intellgence);
         playerStats.vitality.AddModifier(vitality);
 
         playerStats.damage.AddModifier(damage);
@@ -82,7 +82,7 @@ public class ItemData_Equipment : ItemData
 
         playerStats.strength.RemoveModifier(strength);
         playerStats.agility.RemoveModifier(agility);
-        playerStats.intellgence.RemoveModifier(intellgence);
+        playerStats.intelligence.RemoveModifier(intellgence);
         playerStats.vitality.RemoveModifier(vitality);
 
         playerStats.damage.RemoveModifier(damage);

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18414f316d4f58e4da8ab5f0f66c9c7d, type: 3}
   m_Name: Thunder strike effect
   m_EditorClassIdentifier: 
-  thunderStrikePrefab: {fileID: 0}
+  thunderStrikePrefab: {fileID: 6630733190634407556, guid: bba4ad63cf1c3734f9cbaf227ca7b6d0, type: 3}

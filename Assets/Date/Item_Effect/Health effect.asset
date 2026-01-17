@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 620123623738f5946b4c10ae866aa2c7, type: 3}
-  m_Name: Ice and Fire effect
+  m_Script: {fileID: 11500000, guid: ac3e69c75e153c24486388bbe70a6eaa, type: 3}
+  m_Name: Health effect
   m_EditorClassIdentifier: 
-  iceAndFirePrefab: {fileID: 6730107688168203016, guid: 93ef3f0878e6cab4ea7611ee4cc407e6, type: 3}
-  xVecelocity: 10
+  healthPercent: 0.1
