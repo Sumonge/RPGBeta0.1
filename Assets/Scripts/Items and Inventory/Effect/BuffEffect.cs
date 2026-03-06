@@ -33,43 +33,8 @@ public class BuffEffect : ItemEffect
     public override void ExecuteEffect(Transform _enemyPosition)
     {
         stats=PlayerManager.instance.player.GetComponent<PlayerStats>();
-        stats.IncreaseStatBy(buffAmount, buffDuration, StartToModify());
+        stats.IncreaseStatBy(buffAmount, buffDuration, stats.GetStat(buffType));
        // PlayerManager.instance.player.StartCoroutine(RemoveBuffAfterDuration());
     }   
-    private Stat StartToModify()
-    {
-        switch (buffType)
-        {
-            case StatType.strength:
-                return stats.strength;
-            case StatType.agility:
-                return stats.agility;
-            case StatType.intelligence:
-                return stats.intelligence;
-            case StatType.vitality:
-                return stats.vitality;
-            case StatType.damage:
-                return stats.damage;
-            case StatType.critChance:
-                return stats.critChance;
-            case StatType.critPower:
-                return stats.critPower;
-            case StatType.health:
-                return stats.maxHealth;
-            case StatType.armor:
-                return stats.armor;
-            case StatType.evasion:
-                return stats.evasion;
-            case StatType.magicRes:
-                return stats.magicResistance;
-            case StatType.fireDamage:
-                return stats.fireDamage;
-            case StatType.iceDamage:
-                return stats.iceDamage;
-            case StatType.lightDamage:
-                return stats.lightingDamage;
-            default:
-                return null;
-        }
-    }
+
 }

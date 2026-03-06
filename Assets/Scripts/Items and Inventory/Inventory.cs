@@ -24,10 +24,12 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Transform inventorySlotParent;
     [SerializeField] private Transform statsSlotParent;
     [SerializeField] private Transform equipmentSlotParent;
+    [SerializeField] private Transform statSlotParent;
 
     private UI_ItemSlot[] inventoryItemSlot;
     private UI_ItemSlot[] stashItemSlot;
     private UI_EquipmentSlot[] equipmentSlot;
+    private UI_StatSlot[] statSlot;
 
     [Header("Item cooldown")]
     private float lastTimeUsedFlask;
@@ -56,6 +58,7 @@ public class Inventory : MonoBehaviour
         inventoryItemSlot = inventorySlotParent.GetComponentsInChildren<UI_ItemSlot>();
         stashItemSlot = statsSlotParent.GetComponentsInChildren<UI_ItemSlot>();
         equipmentSlot = equipmentSlotParent.GetComponentsInChildren<UI_EquipmentSlot>();
+        statSlot = statSlotParent.GetComponentsInChildren<UI_StatSlot>();
         AddStartingItems();
     }
 
@@ -138,10 +141,14 @@ public class Inventory : MonoBehaviour
         {
             stashItemSlot[i].UpdateSlot(stash[i]);
         }
+        for (int i = 0; i < statSlot.Length; i++)//更新字符属性UI
+        {
+           statSlot[i].UpdateStatValueUI();
+        }
     }
     public void AddItem(ItemData _item)
     {
-        if (_item.itemType == ItemType.Equipment)
+        if (_item.itemType == ItemType.Equipment&&CanAddItem())
         {
             AddToInventory(_item);
 
@@ -209,13 +216,24 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public bool CanAddItem()
+    {
+        if(inventory.Count>=inventoryItemSlot.Length)
+        {
+            Debug.Log("背包已满");
+            return false;
+
+        }
+        return true;
+    }
+
     public bool CanCraft(ItemData_Equipment _itemToCraft, List<InventoryItem> _requireMaterials)
     {
         List<InventoryItem> materialsToRemove = new List<InventoryItem>();
 
         for (int i = 0; i < _requireMaterials.Count; i++)
         {
-            if (stashDictionary.TryGetValue(_requireMaterials[i].date, out InventoryItem stashValue))
+            if (stashDictionary.TryGetValue(_requireMaterials[i].data, out InventoryItem stashValue))
             {
                 //加使用材料
                 if (stashValue.stackSize < _requireMaterials[i].stackSize)
@@ -237,7 +255,7 @@ public class Inventory : MonoBehaviour
         }
         for (int i = 0; i < materialsToRemove.Count; i++)
         {
-            RemoveItem(materialsToRemove[i].date);
+            RemoveItem(materialsToRemove[i].data);
         }
         AddItem(_itemToCraft);
         Debug.Log("生成物品" + _itemToCraft.name);

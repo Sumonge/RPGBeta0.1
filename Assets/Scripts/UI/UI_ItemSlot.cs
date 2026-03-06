@@ -20,7 +20,7 @@ public class UI_ItemSlot : MonoBehaviour,IPointerDownHandler
 
         if (item != null)
         {
-            itemImage.sprite = item.date.icon;
+            itemImage.sprite = item.data.icon;
 
             if (item.stackSize > 1)
             {
@@ -51,14 +51,14 @@ public class UI_ItemSlot : MonoBehaviour,IPointerDownHandler
 
         if (Input.GetKey(KeyCode.T))
         {
-            Inventory.instance.RemoveItem(item.date);
+            Inventory.instance.RemoveItem(item.data);
             return;
               
                 
         }
 
-        if (item.date.itemType == ItemType.Equipment)
-            Inventory.instance.EquipItem(item.date);
+        if (item.data.itemType == ItemType.Equipment)
+            Inventory.instance.EquipItem(item.data);
     }
 }
 

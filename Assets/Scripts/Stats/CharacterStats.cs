@@ -1,6 +1,7 @@
 
 using System.Collections;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
@@ -377,6 +378,42 @@ public class CharacterStats : MonoBehaviour
         return maxHealth.GetValue() + vitality.GetValue() * 5;
     }
     #endregion
+    public Stat GetStat(StatType _statType)
+    {
+        switch (_statType)
+        {
+            case StatType.strength:
+                return strength;
+            case StatType.agility:
+                return agility;
+            case StatType.intelligence:
+                return intelligence;
+            case StatType.vitality:
+                return vitality;
+            case StatType.damage:
+                return damage;
+            case StatType.critChance:
+                return critChance;
+            case StatType.critPower:
+                return critPower;
+            case StatType.health:
+                return maxHealth;
+            case StatType.armor:
+                return armor;
+            case StatType.evasion:
+                return evasion;
+            case StatType.magicRes:
+                return magicResistance;
+            case StatType.fireDamage:
+                return fireDamage;
+            case StatType.iceDamage:
+                return iceDamage;
+            case StatType.lightDamage:
+                return lightingDamage;
+            default:
+                return null;
+        }
+    }
 }
 
 

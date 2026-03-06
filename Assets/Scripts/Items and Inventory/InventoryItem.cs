@@ -3,12 +3,12 @@ using System;
 [Serializable]
 public class InventoryItem
 {
-    public ItemData date;
+    public ItemData data;
     public int stackSize;
 
     public InventoryItem(ItemData _newItemDate)
     {
-        date = _newItemDate;
+        data = _newItemDate;
         AddStack();
     }
 

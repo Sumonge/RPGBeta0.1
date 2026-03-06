@@ -12,7 +12,7 @@ public class UI_CraftSlot : UI_ItemSlot
     public override void OnPointerDown(PointerEventData eventData)
     {
         //工艺数据
-        ItemData_Equipment craftDate=item.date as ItemData_Equipment;
+        ItemData_Equipment craftDate=item.data as ItemData_Equipment;
         Inventory.instance.CanCraft(craftDate,craftDate.craftingMaterials);
     }
 }
