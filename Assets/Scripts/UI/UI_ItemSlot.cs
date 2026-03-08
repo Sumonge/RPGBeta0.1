@@ -4,13 +4,18 @@ using UnityEngine;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 
-public class UI_ItemSlot : MonoBehaviour,IPointerDownHandler
+public class UI_ItemSlot : MonoBehaviour,IPointerDownHandler,IPointerEnterHandler,IPointerExitHandler
 {
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemText;
 
+    private UI ui;
     public InventoryItem item;
 
+    private void Start()
+    {
+        ui = FindObjectOfType<UI>();
+    }
 
     public void UpdateSlot(InventoryItem _item)
     {
@@ -59,6 +64,20 @@ public class UI_ItemSlot : MonoBehaviour,IPointerDownHandler
 
         if (item.data.itemType == ItemType.Equipment)
             Inventory.instance.EquipItem(item.data);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (item == null)
+            return;
+       ui.itemToolTip.ShowToolTip(item.data as ItemData_Equipment);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (item == null)
+            return;
+        ui.itemToolTip.HideToolTip();
     }
 }
 
