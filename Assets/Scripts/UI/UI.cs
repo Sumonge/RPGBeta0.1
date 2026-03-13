@@ -8,7 +8,7 @@ public class UI : MonoBehaviour
     [SerializeField] private GameObject optionUI;
 
 
-
+    public UI_SkillToolTip skillToolTip;
     public UI_ItemToolTip itemToolTip;
     public UI_StatToolTip statToolTip;
     public UI_CraftWindow craftWindow;
