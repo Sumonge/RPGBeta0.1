@@ -8,6 +8,7 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
 {
     private UI ui;
 
+    [SerializeField]private int skillPrice;
     [SerializeField]private string skillName;
     [TextArea]
     [SerializeField]private string skillDescription;
@@ -25,7 +26,10 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
     {
         gameObject.name = "SkillTreeSlot_UI - " + skillName;
     }
-
+    private void Awake()
+    {
+        GetComponent<Button>().onClick.AddListener(() => UnlockSkillSlot());
+    }
     private void Start()
     {
         skillImage=GetComponent<Image>();
@@ -34,11 +38,12 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
 
         skillImage.color = lockedSkillColor;
 
-        GetComponent<Button>().onClick.AddListener(() => UnlockSkillSlot());
+        
     }
 
     public void UnlockSkillSlot()
     {
+        
         //逐级解锁
         for (int i = 0; i < shouldBeUnlocked.Length; i++)
         {
@@ -59,6 +64,8 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
                 return;
             }
         }
+        if (PlayerManager.instance.HaveEnoughSkillPoint(skillPrice) == false)
+            return;
 
         unlocked = true;
         skillImage.color = Color.white;
@@ -68,7 +75,7 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
     {
        ui.skillToolTip.ShowToolTip(skillDescription,skillName);
 
-        Vector2 mousePosition=Input.mousePosition;
+        Vector2 mousePosition=Input.mousePosition;//鼠标位置，日后需要添加分辨率适配
 
         float XOffset = 0;
         float YOffset = 0;
