@@ -54,6 +54,7 @@ public class CharacterStats : MonoBehaviour
     public System.Action onHealthChanged;
 
     public bool isDead { get;private set; }
+    private bool isVulnerable;
 
     protected virtual void Start()
     {
@@ -82,6 +83,17 @@ public class CharacterStats : MonoBehaviour
             isShocked = false;
         if(isIgnited)
             ApplyIgniteDamage();
+    }
+    public void MakeVulnerableFor(float _duration)
+    {
+        StartCoroutine(VulnerableCorutine(_duration));
+    }
+
+    private IEnumerator VulnerableCorutine(float _duration)
+    {
+        isVulnerable = true;
+        yield return new WaitForSeconds(_duration);
+        isVulnerable = false;
     }
 
     public virtual void IncreaseStatBy(int _modifier,float _duration,Stat _statToModify)
@@ -314,6 +326,9 @@ public class CharacterStats : MonoBehaviour
 
     protected virtual void DecreaseHealthBy(int _damage)
     {
+        if(isVulnerable)
+            _damage=Mathf.RoundToInt(_damage*1.1f);//易碎buff增加10%的伤害
+
         currentHealth -= _damage;
         if(onHealthChanged!=null)
             onHealthChanged();
@@ -340,6 +355,10 @@ public class CharacterStats : MonoBehaviour
         totalMagicakDamage = Mathf.Clamp(totalMagicakDamage, 0, int.MaxValue);
         return totalMagicakDamage;
     }
+    public  virtual void OnEvasion()
+    {
+
+    }
     private bool TargetCanAvoidAttack( CharacterStats _targetStats)
     {
         int totalEvasion = _targetStats.evasion.GetValue() + _targetStats.agility.GetValue();
@@ -350,7 +369,7 @@ public class CharacterStats : MonoBehaviour
 
         if (Random.Range(0, 100) < totalEvasion)
         {
-           
+           _targetStats.OnEvasion();
             return true;
         }
         return false;

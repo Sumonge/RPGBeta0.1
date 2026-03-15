@@ -73,24 +73,57 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-       ui.skillToolTip.ShowToolTip(skillDescription,skillName);
+        ui.skillToolTip.ShowToolTip(skillDescription, skillName);
 
-        Vector2 mousePosition=Input.mousePosition;//鼠标位置，日后需要添加分辨率适配
+        Vector2 mousePosition = Input.mousePosition;
 
-        float XOffset = 0;
-        float YOffset = 0;
+        // 尝试基于 Canvas 做本地坐标定位并夹紧到画布内，适配不同分辨率与画布缩放模式
+        RectTransform tooltipRT = ui.skillToolTip.GetComponent<RectTransform>();
+        Canvas canvas = ui.skillToolTip.GetComponentInParent<Canvas>();
+        if (canvas != null && tooltipRT != null)
+        {
+            RectTransform canvasRT = canvas.GetComponent<RectTransform>();
+            Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
 
-        if (mousePosition.x>600)
-            XOffset=-150;
+            Vector2 localPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRT, mousePosition, cam, out localPoint);
+
+            // 推荐偏移，可根据需求调整或基于 tooltip 大小计算
+            Vector2 offset = new Vector2(150f, 150f);
+
+            Vector2 desired = localPoint + offset;
+
+            // 计算可用最小/最大值以防 tooltip 超出画布边界
+            Vector2 tooltipSize = tooltipRT.rect.size;
+            Vector2 min = canvasRT.rect.min + (tooltipSize * tooltipRT.pivot);
+            Vector2 max = canvasRT.rect.max - (tooltipSize * (Vector2.one - tooltipRT.pivot));
+
+            // Vector2 没有 Clamp 静态方法，按分量使用 Mathf.Clamp 进行夹紧
+            desired = new Vector2(
+                Mathf.Clamp(desired.x, min.x, max.x),
+                Mathf.Clamp(desired.y, min.y, max.y)
+            );
+
+            tooltipRT.anchoredPosition = desired;
+        }
         else
-            XOffset=150;
+        {
+            // 回退到屏幕坐标的简单逻辑（保持原有行为）
+            float XOffset = 0;
+            float YOffset = 0;
 
-        if (mousePosition.y>320)
-            YOffset=-150;
-        else
-            YOffset=150;
+            if (mousePosition.x > 600)
+                XOffset = -150;
+            else
+                XOffset = 150;
 
-        ui.skillToolTip.transform.position = new Vector2(mousePosition.x+XOffset,mousePosition.y+ YOffset);
+            if (mousePosition.y > 320)
+                YOffset = -150;
+            else
+                YOffset = 150;
+
+            ui.skillToolTip.transform.position = new Vector2(mousePosition.x + XOffset, mousePosition.y + YOffset);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)

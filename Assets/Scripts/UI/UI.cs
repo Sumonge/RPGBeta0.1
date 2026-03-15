@@ -34,6 +34,25 @@ public class UI : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.O))
             SwitchWithKeyTo(optionUI);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // 关闭所有菜单
+            SwitchTo(null);
+
+            // 隐藏所有可能单独显示的 UI 元素（tooltip / craft window）
+            if (itemToolTip != null)
+                itemToolTip.gameObject.SetActive(false);
+
+            if (statToolTip != null)
+                statToolTip.gameObject.SetActive(false);
+
+            if (skillToolTip != null)
+                skillToolTip.gameObject.SetActive(false);
+
+            if (craftWindow != null)
+                craftWindow.gameObject.SetActive(false);
+        }
     }
 
     public void SwitchTo(GameObject _menu)
