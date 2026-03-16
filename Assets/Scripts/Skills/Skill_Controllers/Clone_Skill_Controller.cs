@@ -12,6 +12,7 @@ public class Clone_Skill_Controller : MonoBehaviour
     [SerializeField] private float colorLoosingSpeed;
 
     private float cloneTimer;
+    private float attackMultiplier;
     [SerializeField] private Transform attackCheck;
     [SerializeField] private float  attackCheckRadius = .8f;
     private Transform closestEnemy;
@@ -37,12 +38,13 @@ public class Clone_Skill_Controller : MonoBehaviour
         }
     }
 
-    public void SetupClone(Transform _newTransforem,float _cloneDuration,bool _canAttack,Vector3 _offset,Transform _closestEnemy,bool _canDuplicate,float _chanceToDuplicate,Player _player)
+    public void SetupClone(Transform _newTransforem,float _cloneDuration,bool _canAttack,Vector3 _offset,Transform _closestEnemy,bool _canDuplicate,float _chanceToDuplicate,Player _player,float _attackMultiplier )
     {
         if(_canAttack)
         {
             anim.SetInteger("AttackNumber", UnityEngine.Random.Range(1, 3)); //增加引用
         }
+        attackMultiplier=_attackMultiplier;
         player = _player;
         transform.position = _newTransforem.position+_offset;
         cloneTimer =_cloneDuration;
@@ -65,9 +67,22 @@ public class Clone_Skill_Controller : MonoBehaviour
         {
             if (hit.GetComponent<Enemy>() != null)
             {
-                player.stats.DoDamage(hit.GetComponent<CharacterStats>());
-                
-                if(canDuplicateClone)
+                //player.stats.DoDamage(hit.GetComponent<CharacterStats>());
+
+                PlayerStats playerStats = player.GetComponent<PlayerStats>();
+                EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
+
+                playerStats.CloneDodamege(enemyStats, attackMultiplier);
+
+                if(player.skill.clone.canApplyOnHitEffect)
+                {
+                    ItemData_Equipment weaponData = Inventory.instance.GetEquipmentType(EquipmentType.Wepon);
+                    if (weaponData != null)
+                        weaponData.Effect(hit.transform);
+                }
+
+
+                if (canDuplicateClone)
                 {
                     if(UnityEngine.Random.Range(0,100)<chanceToDuplicate)
                     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class PlayerStats : CharacterStats
 {
@@ -34,5 +35,26 @@ public class PlayerStats : CharacterStats
     public override void OnEvasion()
     {
        player.skill.dodge.CreatMirageOnDodge();
+    }
+
+    public void CloneDodamege(CharacterStats _targetStats,float _multiplier)
+    {
+        if (TargetCanAvoidAttack(_targetStats))
+            return;
+
+        int totalDamage = damage.GetValue() + strength.GetValue();
+        
+        if(_multiplier>0)
+            totalDamage=Mathf.RoundToInt(totalDamage*_multiplier);
+
+        if (CanCrit())
+        {
+            totalDamage = CalculateCriticalDamage(totalDamage);
+        }
+        totalDamage = CheckTargetArmor(_targetStats, totalDamage);
+        _targetStats.TakeDamage(totalDamage);
+        //DoMagicDamage(_targetStats);
+        //如果武器附魔则造成魔法伤害
+        DoMagicDamage(_targetStats);//移除火系伤害如果想的话要删掉这一行
     }
 }

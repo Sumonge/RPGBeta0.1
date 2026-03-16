@@ -41,7 +41,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
         blackholeTimer = _blackholeDuration;
 
-        if (SkillManager.instance.clone.crystalInseadofClone)
+        if (SkillManager.instance.clone.crystalInseadOfClone)
  playerCanDisapear = false;
 
     }
@@ -116,7 +116,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
                 xOffset = 2;
             else
                 xOffset = -2;
-            if(SkillManager.instance.clone.crystalInseadofClone)
+            if(SkillManager.instance.clone.crystalInseadOfClone)
             {
                 SkillManager.instance.crystal.CreatCrystal();
                 SkillManager.instance.crystal.CurrentCrystalChooseRandomTarget();
