@@ -95,6 +95,8 @@ public class Sword_Skill_Controller : MonoBehaviour
         //rb.isKinematic =false;
         transform.parent = null;
         isReturning=true;
+
+        //设置剑的冷却，等剑返回玩家后才能再次使用
     }
 
     private void Update()

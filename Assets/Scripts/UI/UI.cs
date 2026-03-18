@@ -6,15 +6,22 @@ public class UI : MonoBehaviour
     [SerializeField] private GameObject skillTreeUI;
     [SerializeField] private GameObject craftUI;
     [SerializeField] private GameObject optionUI;
+    [SerializeField] private GameObject inGameUI;
 
 
     public UI_SkillToolTip skillToolTip;
     public UI_ItemToolTip itemToolTip;
     public UI_StatToolTip statToolTip;
     public UI_CraftWindow craftWindow;
+
+    private void Awake()
+    {
+        SwitchTo(skillTreeUI);//需要先打开技能树界面，才能正确设置技能树界面上技能图标的 tooltip 的引用
+    }
     void Start()
     {
-        SwitchTo(null);
+       
+        SwitchTo(inGameUI);
 
         itemToolTip.gameObject.SetActive(false);
         statToolTip.gameObject.SetActive(false);
@@ -71,9 +78,21 @@ public class UI : MonoBehaviour
         if (_menu != null && _menu.activeSelf)
         {
             _menu.SetActive(false);
+            CheckForInGameUI();
+
             return;
         }
         SwitchTo(_menu);
+    
     }
 
+    private void CheckForInGameUI()
+    {
+        for(int i=0;i<transform.childCount;i++)
+        {
+             if (transform.GetChild(i).gameObject.activeSelf)
+                return;
+        }
+        SwitchTo(inGameUI);
+    }
 }

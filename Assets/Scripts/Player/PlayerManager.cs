@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour
         else
             instance = this;
     }
+
     public bool HaveEnoughSkillPoint(int _sp)
     {
         if (_sp > currency)
@@ -28,4 +29,5 @@ public class PlayerManager : MonoBehaviour
         return true;
         
     }
+    public int GetCurrency()=> currency;
 }
