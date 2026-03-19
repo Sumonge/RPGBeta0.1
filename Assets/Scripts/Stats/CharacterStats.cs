@@ -63,7 +63,7 @@ public class CharacterStats : MonoBehaviour
 
         fx=GetComponent<EntityFX>();
 
-        Debug.Log("characater stats called");
+       
     }
     protected virtual void Update()
     {
