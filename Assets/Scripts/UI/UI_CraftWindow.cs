@@ -29,7 +29,7 @@ public class UI_CraftWindow : MonoBehaviour
             if (_data.craftingMaterials.Count > materialImage.Length)
                 Debug.LogWarning("³¬³öÉÏÏÞ");
 
-            materialImage[i].sprite = _data.craftingMaterials[i].data.icon;
+            materialImage[i].sprite = _data.craftingMaterials[i].data.itemIcon;
             materialImage[i].color = Color.white;
             TextMeshProUGUI materialSlotText=materialImage[i].GetComponentInChildren<TextMeshProUGUI>();
 
@@ -39,7 +39,7 @@ public class UI_CraftWindow : MonoBehaviour
 
         }
 
-        itemIcon.sprite=_data.icon;
+        itemIcon.sprite=_data.itemIcon;
         itemName.text=_data.itemName;
         itemDescription.text=_data.GetDescription();
 

@@ -16,6 +16,14 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
+        //脚本运行顺序问题解决尝试，或者在inventory添加协程解决，保证此段早于add初始装备生成
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+
+        saveManagers = FindAllSaveManagers();
+
+        LoadGame();
+
+        //*********************************************************************************
         if (instance != null)
             Destroy(instance.gameObject);
         else
@@ -24,11 +32,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        dataHandler = new FileDataHandler(Application.persistentDataPath,fileName);
 
-        saveManagers = FindAllSaveManagers();
-
-        LoadGame();
     }
 
     public void NewGame()
