@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler
+public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler,ISaveManager
 {
     private UI ui;
 
@@ -38,6 +38,8 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
 
         skillImage.color = lockedSkillColor;
 
+        if(unlocked)
+            skillImage.color=Color.white;
         
     }
 
@@ -129,5 +131,26 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
     public void OnPointerExit(PointerEventData eventData)
     {
        ui.skillToolTip.HideToolTip();
+    }
+
+    public void LoadData(GameData _data)
+    {
+        if(_data.skillTree.TryGetValue(skillName,out bool value))
+        {
+            unlocked = value;
+        }
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        if(_data.skillTree.TryGetValue(skillName,out bool value))
+        {
+            _data.skillTree.Remove(skillName);
+            _data.skillTree.Add(skillName, unlocked);
+        }
+        else
+        {
+            _data.skillTree.Add(skillName,unlocked);
+        }
     }
 }
