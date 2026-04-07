@@ -1,6 +1,7 @@
 
 using System.Collections;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
@@ -41,7 +42,7 @@ public class CharacterStats : MonoBehaviour
 
 
 
-    private float igniteCooldown=.3f;
+    private float igniteCooldown = .3f;
     private float igniteDamageTimer;
     private int ignitedDamage;
     [SerializeField] private GameObject shockStrikePrefab;
@@ -52,16 +53,17 @@ public class CharacterStats : MonoBehaviour
 
     public System.Action onHealthChanged;
 
-    public bool isDead { get;private set; }
+    public bool isDead { get; private set; }
+    private bool isVulnerable;
 
     protected virtual void Start()
     {
         critPower.SetDefaultValue(150);
         currentHealth = GetMaxHealthValue();
 
-        fx=GetComponent<EntityFX>();
+        fx = GetComponent<EntityFX>();
 
-        Debug.Log("characater stats called");
+
     }
     protected virtual void Update()
     {
@@ -79,11 +81,22 @@ public class CharacterStats : MonoBehaviour
             isChilled = false;
         if (shockedTimer < 0)
             isShocked = false;
-        if(isIgnited)
+        if (isIgnited)
             ApplyIgniteDamage();
     }
+    public void MakeVulnerableFor(float _duration)
+    {
+        StartCoroutine(VulnerableCorutine(_duration));
+    }
 
-    public virtual void IncreaseStatBy(int _modifier,float _duration,Stat _statToModify)
+    private IEnumerator VulnerableCorutine(float _duration)
+    {
+        isVulnerable = true;
+        yield return new WaitForSeconds(_duration);
+        isVulnerable = false;
+    }
+
+    public virtual void IncreaseStatBy(int _modifier, float _duration, Stat _statToModify)
     {
         StartCoroutine(StatModCoroutine(_modifier, _duration, _statToModify));
     }
@@ -108,7 +121,7 @@ public class CharacterStats : MonoBehaviour
 
         if (CanCrit())
         {
-            totalDamage=CalculateCriticalDamage(totalDamage);
+            totalDamage = CalculateCriticalDamage(totalDamage);
         }
         totalDamage = CheckTargetArmor(_targetStats, totalDamage);
         _targetStats.TakeDamage(totalDamage);
@@ -182,24 +195,24 @@ public class CharacterStats : MonoBehaviour
         return true;
     }
 
-    
+
 
     public void ApplyAilments(bool _ignite, bool _chill, bool _shock)
     {
         bool canApplyIgnite = !isIgnited && !isChilled && !isShocked;
-        bool canApplyChilled= !isIgnited && !isChilled && !isShocked;
-        bool canApplyShock= !isIgnited  && !isChilled;
+        bool canApplyChilled = !isIgnited && !isChilled && !isShocked;
+        bool canApplyShock = !isIgnited && !isChilled;
 
-        if (_ignite&&canApplyIgnite)
+        if (_ignite && canApplyIgnite)
         {
-            isIgnited=_ignite;
+            isIgnited = _ignite;
             ignitedTimer = ailmentsDuration;
 
             fx.IgniteFxFor(ailmentsDuration);
         }
-        if(_chill&&canApplyChilled)
+        if (_chill && canApplyChilled)
         {
-            isChilled=_chill;
+            isChilled = _chill;
             chilledTimer = ailmentsDuration;
             float slowPercentage = .2f;
             GetComponent<Entity>().SlowEntityBy(slowPercentage, ailmentsDuration);
@@ -207,9 +220,9 @@ public class CharacterStats : MonoBehaviour
 
             fx.ChillFxFor(ailmentsDuration);
         }
-        if(_shock&&canApplyShock)
+        if (_shock && canApplyShock)
         {
-            if(!isShocked)
+            if (!isShocked)
             {
                 ApplyShock(_shock);
             }
@@ -227,7 +240,7 @@ public class CharacterStats : MonoBehaviour
 
     public void ApplyShock(bool _shock)
     {
-        if(isShocked)
+        if (isShocked)
             return;
 
         isShocked = _shock;
@@ -274,15 +287,15 @@ public class CharacterStats : MonoBehaviour
         {
             DecreaseHealthBy(ignitedDamage);
 
-            if (currentHealth < 0&&!isDead)
+            if (currentHealth < 0 && !isDead)
                 Die();
             igniteDamageTimer = igniteCooldown;
         }
     }
 
-    public void SetupIgniteDamage(int _damage)=>ignitedDamage = _damage;
+    public void SetupIgniteDamage(int _damage) => ignitedDamage = _damage;
 
-    public void SetupShockStrikeDamage(int _damage)=>shockDamage = _damage;
+    public void SetupShockStrikeDamage(int _damage) => shockDamage = _damage;
 
     #endregion
 
@@ -294,7 +307,7 @@ public class CharacterStats : MonoBehaviour
         GetComponent<Entity>().DamageImpact();
         fx.StartCoroutine("FlashFX");
 
-        if (currentHealth <= 0&&!isDead)
+        if (currentHealth <= 0 && !isDead)
         {
             Die();
         }
@@ -302,19 +315,22 @@ public class CharacterStats : MonoBehaviour
 
     public virtual void IncreaseHealthBy(int _amount)
     {
-        currentHealth+= _amount;
+        currentHealth += _amount;
 
-        if(currentHealth>GetMaxHealthValue())
-            currentHealth=GetMaxHealthValue();
+        if (currentHealth > GetMaxHealthValue())
+            currentHealth = GetMaxHealthValue();
 
-        if(onHealthChanged!=null)
+        if (onHealthChanged != null)
             onHealthChanged();
     }
 
     protected virtual void DecreaseHealthBy(int _damage)
     {
+        if (isVulnerable)
+            _damage = Mathf.RoundToInt(_damage * 1.1f);//易碎buff增加10%的伤害
+
         currentHealth -= _damage;
-        if(onHealthChanged!=null)
+        if (onHealthChanged != null)
             onHealthChanged();
     }
     protected virtual void Die()
@@ -322,12 +338,12 @@ public class CharacterStats : MonoBehaviour
         isDead = true;
     }
     #region Stat calculations
-    private int CheckTargetArmor(CharacterStats _targetStats, int totalDamage)
+    protected int CheckTargetArmor(CharacterStats _targetStats, int totalDamage)
     {
         if (_targetStats.isChilled)
-            totalDamage -=Mathf.RoundToInt( _targetStats.armor.GetValue() * .8f);
+            totalDamage -= Mathf.RoundToInt(_targetStats.armor.GetValue() * .8f);
         else
-            totalDamage-=_targetStats.armor.GetValue();
+            totalDamage -= _targetStats.armor.GetValue();
 
         totalDamage = Mathf.Clamp(totalDamage, 0, int.MaxValue);
         //_targetStats.TakeDamage(totalDamage);
@@ -339,37 +355,41 @@ public class CharacterStats : MonoBehaviour
         totalMagicakDamage = Mathf.Clamp(totalMagicakDamage, 0, int.MaxValue);
         return totalMagicakDamage;
     }
-    private bool TargetCanAvoidAttack( CharacterStats _targetStats)
+    public virtual void OnEvasion()
+    {
+
+    }
+    protected bool TargetCanAvoidAttack(CharacterStats _targetStats)
     {
         int totalEvasion = _targetStats.evasion.GetValue() + _targetStats.agility.GetValue();
 
 
-        if(isShocked)
+        if (isShocked)
             totalEvasion += 20;
 
         if (Random.Range(0, 100) < totalEvasion)
         {
-           
+            _targetStats.OnEvasion();
             return true;
         }
         return false;
     }
 
-    private bool CanCrit()
+    protected bool CanCrit()
     {
         int totalCriticalChance = critChance.GetValue() + agility.GetValue();
 
-            if(Random.Range(0,100)<=totalCriticalChance)
+        if (Random.Range(0, 100) <= totalCriticalChance)
         {
             return true;
         }
-            return false;
+        return false;
     }
 
-    private int CalculateCriticalDamage(int _damage)
+    protected int CalculateCriticalDamage(int _damage)
     {
-        float totalCritPower=(critPower.GetValue()+strength.GetValue())*.01f;
-        float critDamage = _damage*totalCritPower;
+        float totalCritPower = (critPower.GetValue() + strength.GetValue()) * .01f;
+        float critDamage = _damage * totalCritPower;
         return Mathf.RoundToInt(critDamage);
     }
     public int GetMaxHealthValue()
@@ -377,6 +397,42 @@ public class CharacterStats : MonoBehaviour
         return maxHealth.GetValue() + vitality.GetValue() * 5;
     }
     #endregion
+    public Stat GetStat(StatType _statType)
+    {
+        switch (_statType)
+        {
+            case StatType.strength:
+                return strength;
+            case StatType.agility:
+                return agility;
+            case StatType.intelligence:
+                return intelligence;
+            case StatType.vitality:
+                return vitality;
+            case StatType.damage:
+                return damage;
+            case StatType.critChance:
+                return critChance;
+            case StatType.critPower:
+                return critPower;
+            case StatType.health:
+                return maxHealth;
+            case StatType.armor:
+                return armor;
+            case StatType.evasion:
+                return evasion;
+            case StatType.magicRes:
+                return magicResistance;
+            case StatType.fireDamage:
+                return fireDamage;
+            case StatType.iceDamage:
+                return iceDamage;
+            case StatType.lightDamage:
+                return lightingDamage;
+            default:
+                return null;
+        }
+    }
 }
 
 

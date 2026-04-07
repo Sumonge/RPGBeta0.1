@@ -5,31 +5,38 @@ using UnityEngine;
 public class ItemObject : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private ItemData itemDate;
+    [SerializeField] private ItemData itemData;
 
 
 
     private void SetipVisuals()
     {
-        if (itemDate == null)
+        if (itemData == null)
             return;
 
-        GetComponent<SpriteRenderer>().sprite = itemDate.icon;
-        gameObject.name = "Item object-" + itemDate.itemName;
+        GetComponent<SpriteRenderer>().sprite = itemData.itemIcon;//icon¸Ä³ÉitemIconÁË
+        gameObject.name = "Item object-" + itemData.itemName;
     }
 
 
-    public void SetupItem(ItemData _itemData,Vector2 _velocity)
+    public void SetupItem(ItemData _itemData, Vector2 _velocity)
     {
-        itemDate = _itemData;
-       
+        itemData = _itemData;
+
         rb.velocity = _velocity;
         SetipVisuals();
     }
 
     public void PickupItem()
     {
-        Inventory.instance.AddItem(itemDate);
+
+        if (!Inventory.instance.CanAddItem() && itemData.itemType == ItemType.Equipment)
+        {
+            rb.velocity = new Vector2(0, 7);
+            return;
+        }
+
+        Inventory.instance.AddItem(itemData);
         Destroy(gameObject);
     }
 }

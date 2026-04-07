@@ -20,28 +20,28 @@ public class PlayerItemDrop : ItemDrop
         {
             if(Random.Range(0,100)<=chanceToLooseItems)
             {
-                DropItem(item.date);
-                inventory.UnequipItem(item.date as ItemData_Equipment);//违反foreach直接修改数组，可用tolist循环或者使用for循环倒序遍历
+                DropItem(item.data);
+                inventory.UnequipItem(item.data as ItemData_Equipment);//违反foreach直接修改数组，可用tolist循环或者使用for循环倒序遍历
             }
             
         }
         for (int i = 0; i < itemToUnequip.Count; i++)
         {
 
-            inventory.UnequipItem(itemToUnequip[i].date as ItemData_Equipment);
+            inventory.UnequipItem(itemToUnequip[i].data as ItemData_Equipment);
         }
 
         foreach(InventoryItem item in inventory.GetStashList())
         {
             if(Random.Range(0,100)<=chanceToLooseMaterials)
             {
-                DropItem(item.date);
+                DropItem(item.data);
                 materulsToLoose.Add(item);
             }
         }
         for (int i = 0; i < materulsToLoose.Count; i++)
         {
-            inventory.RemoveItem(materulsToLoose[i].date);
+            inventory.RemoveItem(materulsToLoose[i].data);
         }
     }
 }
