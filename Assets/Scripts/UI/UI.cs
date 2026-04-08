@@ -16,7 +16,7 @@ public class UI : MonoBehaviour
     [SerializeField] private GameObject inGameUI;
 
 
-    //public UI_SkillToolTip skillToolTip;
+    public UI_SkillToolTip skillToolTip;
     public UI_ItemToolTip itemToolTip;
     public UI_StatToolTip statToolTip;
     public UI_CraftWindow craftWindow;
@@ -28,7 +28,7 @@ public class UI : MonoBehaviour
     void Start()
     {
 
-        //SwitchTo(inGameUI);
+        SwitchTo(inGameUI);
 
         itemToolTip.gameObject.SetActive(false);
         statToolTip.gameObject.SetActive(false);
@@ -61,8 +61,8 @@ public class UI : MonoBehaviour
             if (statToolTip != null)
                 statToolTip.gameObject.SetActive(false);
 
-            //if (skillToolTip != null)
-            //    skillToolTip.gameObject.SetActive(false);
+            if (skillToolTip != null)
+                skillToolTip.gameObject.SetActive(false);
 
             if (craftWindow != null)
                 craftWindow.gameObject.SetActive(false);
@@ -77,7 +77,7 @@ public class UI : MonoBehaviour
             //bool fadeScreen = transform.GetChild(i).GetComponent<UI_FadeScreen>() != null;//需要保持淡入淡出界面上的其他UI元素的显示状态不变
 
             //if (fadeScreen == false)
-            //    transform.GetChild(i).gameObject.SetActive(false);
+                transform.GetChild(i).gameObject.SetActive(false);
         }
         if (_menu != null)
             _menu.SetActive(true);
@@ -89,7 +89,7 @@ public class UI : MonoBehaviour
         if (_menu != null && _menu.activeSelf)
         {
             _menu.SetActive(false);
-            //CheckForInGameUI();
+            CheckForInGameUI();
 
             return;
         }
@@ -97,32 +97,32 @@ public class UI : MonoBehaviour
 
     }
 
-    //private void CheckForInGameUI()
-    //{
-    //    for (int i = 0; i < transform.childCount; i++)
-    //    {
-    //        if (transform.GetChild(i).gameObject.activeSelf)
-    //            return;
-    //    }
-    //    SwitchTo(inGameUI);
-    //}
+    private void CheckForInGameUI()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).gameObject.activeSelf)
+                return;
+        }
+        SwitchTo(inGameUI);
+    }
 
     //public void SwitchOnEndScreen()
     //{
 
-    //    //fadeScreen.FadeOut();
+    //    fadeScreen.FadeOut();
     //    StartCoroutine(EndScreenCorutione());
 
     //}
-    //IEnumerator EndScreenCorutione()
-    //{
-    //    yield return new WaitForSeconds(1.5f);
-    //    endScreenText.SetActive(true);
+    IEnumerator EndScreenCorutione()
+    {
+        yield return new WaitForSeconds(1.5f);
+        endScreenText.SetActive(true);
 
-    //    yield return new WaitForSeconds(1.5f);
-    //    restartButton.SetActive(true);
-    //    //SwitchTo(null);
-    //}
+        yield return new WaitForSeconds(1.5f);
+        restartButton.SetActive(true);
+        //SwitchTo(null);
+    }
     //public void RestartGameButton()
     //{
     //    GameManager.instance.RestartGame();

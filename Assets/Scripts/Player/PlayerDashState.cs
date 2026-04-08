@@ -12,8 +12,8 @@ public class PlayerDashState : PlayerState
     {
         base.Enter();
 
-        player.skill.clone.CreateCloneOnDashStart();
-        
+        player.skill.dash.CloneOnDash();
+
 
         stateTimer = player.dashDuration;
     }
@@ -21,9 +21,9 @@ public class PlayerDashState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        player.skill.clone.CreateCloneOnDashOver();
+        player.skill.dash.CloneOnArrival();
 
-        player.SetVelocity(0,rb.velocity.y);
+        player.SetVelocity(0, rb.velocity.y);
     }
 
     public override void Update()
@@ -32,7 +32,7 @@ public class PlayerDashState : PlayerState
 
         player.SetVelocity(player.dashSpeed * player.dashDir, 0);
 
-        if (!player.IsGroundDetected() && player.IsWallDetected() )
+        if (!player.IsGroundDetected() && player.IsWallDetected())
         {
             stateMachine.ChangeState(player.wallSlide);
         }

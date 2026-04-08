@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    [SerializeField] protected float cooldown;
+    public float cooldown;
     protected float cooldownTimer;
 
     protected Player player;
@@ -12,16 +12,21 @@ public class Skill : MonoBehaviour
     protected virtual void Start()
     {
         player = PlayerManager.instance.player;
+
+        CheckUnlock();
     }
 
-    protected virtual void  Update()
+    protected virtual void Update()
     {
-        cooldownTimer-= Time.deltaTime;
+        cooldownTimer -= Time.deltaTime;
     }
+    protected virtual void CheckUnlock()
+    {
 
+    }
     public virtual bool CanUseSkill()
     {
-        if(cooldownTimer < 0)
+        if (cooldownTimer < 0)
         {
             //use skill
             UseSkill();
@@ -60,8 +65,8 @@ public class Skill : MonoBehaviour
         }
         return closestEnemy;
     }
-   
 
-    
+
+
 
 }

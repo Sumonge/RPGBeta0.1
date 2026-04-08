@@ -26,10 +26,10 @@ public class ItemData : ScriptableObject
 
     public void OnValidate()
     {
-//#if UNITY_EDITOR   
-//        string path = AssetDatabase.GetAssetPath(this);
-//        itemId = AssetDatabase.AssetPathToGUID(path);
-//#endif
+#if UNITY_EDITOR   
+        string path = AssetDatabase.GetAssetPath(this);
+        itemId = AssetDatabase.AssetPathToGUID(path);
+#endif
     }
     public virtual string GetDescription()
     {
