@@ -24,14 +24,8 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
-        //脚本运行顺序问题解决尝试，或者在inventory添加协程解决，保证此段早于add初始装备生成
-        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName,encryptData);
 
-        saveManagers = FindAllSaveManagers();
 
-        LoadGame();
-
-        //*********************************************************************************
         if (instance != null)
             Destroy(instance.gameObject);
         else
@@ -40,7 +34,16 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
+        //脚本运行顺序问题解决尝试，或者在inventory添加协程解决，保证此段早于add初始装备生成
+        //哦我的老天，如果这个东西再早checkpoint就加载不出来了，晚了inventory就加载不出来了
+        //直接在unity项目gamemanager先于这两个大麻烦启动
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
 
+        saveManagers = FindAllSaveManagers();
+
+        LoadGame();
+
+        //*********************************************************************************
     }
 
     public void NewGame()

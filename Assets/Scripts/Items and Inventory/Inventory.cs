@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Android;
 
-public class Inventory : MonoBehaviour//, ISaveManager
+public class Inventory : MonoBehaviour, ISaveManager
 {
     public static Inventory instance;
 
@@ -53,7 +53,7 @@ public class Inventory : MonoBehaviour//, ISaveManager
         else
             Destroy(gameObject);
     }
-    private void Start()
+    private IEnumerator Start()
     {
         inventory = new List<InventoryItem>();
         inventoryDictionary = new Dictionary<ItemData, InventoryItem>();
@@ -68,6 +68,9 @@ public class Inventory : MonoBehaviour//, ISaveManager
         stashItemSlot = statsSlotParent.GetComponentsInChildren<UI_ItemSlot>();
         equipmentSlot = equipmentSlotParent.GetComponentsInChildren<UI_EquipmentSlot>();
         statSlot = statSlotParent.GetComponentsInChildren<UI_StatSlot>();
+
+        yield return null;
+
         AddStartingItems();
     }
 
@@ -384,7 +387,7 @@ public class Inventory : MonoBehaviour//, ISaveManager
     private List<ItemData> GetItemDataBase()
     {
         List<ItemData> itemDataBase = new List<ItemData>();
-        string[] assetNames = AssetDatabase.FindAssets("", new[] { "Assets/Data/Items" });
+        string[] assetNames = AssetDatabase.FindAssets("", new[] { "Assets/Data" });
 
         foreach (string SOName in assetNames)
         {
