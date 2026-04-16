@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
-public class UI : MonoBehaviour
+public class UI : MonoBehaviour,ISaveManager
 {
     [Header("End screen")]
     [SerializeField] private UI_FadeScreen fadeScreen;
@@ -20,6 +22,8 @@ public class UI : MonoBehaviour
     public UI_ItemToolTip itemToolTip;
     public UI_StatToolTip statToolTip;
     public UI_CraftWindow craftWindow;
+
+    [SerializeField] private UI_VolumeSlider[] volumeSettings;
 
     private void Awake()
     {
@@ -82,7 +86,15 @@ public class UI : MonoBehaviour
                 transform.GetChild(i).gameObject.SetActive(false);
         }
         if (_menu != null)
+        {
+            // 【修改】只有当 AudioManager 存在且“允许播放”时才播声音
+            // 这样即使 Awake 里调用了 SwitchTo，由于 canPlaySFX 还是 false，声音会被拦截
+            if (AudioManager.instance != null && AudioManager.instance.canPlaySFX)
+            {
+                AudioManager.instance.PlaySFX(27, null);
+            }
             _menu.SetActive(true);
+        }
 
 
     }
@@ -97,13 +109,15 @@ public class UI : MonoBehaviour
         }
         SwitchTo(_menu);
 
+
+
     }
 
     private void CheckForInGameUI()
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            if (transform.GetChild(i).gameObject.activeSelf)
+            if (transform.GetChild(i).gameObject.activeSelf && transform.GetChild(i).GetComponent<UI_FadeScreen>() == null)
                 return;
         }
         SwitchTo(inGameUI);
@@ -130,4 +144,26 @@ public class UI : MonoBehaviour
         GameManager.instance.RestartGame();
     }
 
+    public void LoadData(GameData _data)
+    {
+        foreach (KeyValuePair<string, float> pair in _data.volumeSettings)
+        {
+            foreach (UI_VolumeSlider item in volumeSettings)
+            {
+                if (item.parametr == pair.Key)
+                {
+                    item.LoadSilder(pair.Value);
+                }
+            }
+        }
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        _data.volumeSettings.Clear();
+        foreach(UI_VolumeSlider item in volumeSettings)
+        {
+            _data.volumeSettings.Add(item.parametr, item.slider.value);
+        }
+    }
 }

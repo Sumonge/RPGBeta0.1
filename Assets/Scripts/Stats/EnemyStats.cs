@@ -6,6 +6,7 @@ public class EnemyStats : CharacterStats
 {
     private Enemy enemy;
     private ItemDrop myDropSystem;
+    public Stat spDropAmount;
 
     [Header("Level details")]
     [SerializeField] private int level;
@@ -15,6 +16,9 @@ public class EnemyStats : CharacterStats
 
     protected override void Start()
     {
+        spDropAmount.SetDefaultValue(10);
+
+
         ApplyLevelModfiers();
 
         base.Start();
@@ -44,6 +48,8 @@ public class EnemyStats : CharacterStats
         Modify(fireDamage);
         Modify(iceDamage);
         Modify(lightingDamage);
+
+        Modify(spDropAmount);//修改技能点掉落数量
     }
 
     private void Modify(Stat _stat)
@@ -63,6 +69,8 @@ public class EnemyStats : CharacterStats
     {
         base.Die();
         enemy.Die();
+
+        PlayerManager.instance.currency += spDropAmount.GetValue();
 
         myDropSystem.GenerateDrop();
     }

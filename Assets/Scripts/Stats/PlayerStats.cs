@@ -21,6 +21,10 @@ public class PlayerStats : CharacterStats
         base.Die();
 
         player.Die();
+        GameManager.instance.lostCurrencyAmount = PlayerManager.instance.currency;
+        Debug.Log("玩家死亡，丢失的货币数量：" + GameManager.instance.lostCurrencyAmount);
+        PlayerManager.instance.currency = 0;
+
         GetComponent<PlayerItemDrop>()?.GenerateDrop();
     }
     protected override void DecreaseHealthBy(int _damage)

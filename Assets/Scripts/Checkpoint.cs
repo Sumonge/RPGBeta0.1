@@ -42,6 +42,9 @@ public class Checkpoint : MonoBehaviour
         // 3. 在使用前再次确保组件已被引用（防止 LoadData 在 Awake 之前触发的极端情况）
         EnsureAnimReferenced();
 
+        if(activationStats==false)
+        AudioManager.instance.PlaySFX(25, transform);
+
         if (anim != null)
         {
             anim.SetBool("active", true);

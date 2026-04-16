@@ -25,16 +25,7 @@ public class SaveManager : MonoBehaviour
     private void Awake()
     {
 
-
-        if (instance != null)
-            Destroy(instance.gameObject);
-        else
-            instance = this;
-    }
-
-    private void Start()
-    {
-        //脚本运行顺序问题解决尝试，或者在inventory添加协程解决，保证此段早于add初始装备生成
+                //脚本运行顺序问题解决尝试，或者在inventory添加协程解决，保证此段早于add初始装备生成
         //哦我的老天，如果这个东西再早checkpoint就加载不出来了，晚了inventory就加载不出来了
         //直接在unity项目gamemanager先于这两个大麻烦启动
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
@@ -44,6 +35,19 @@ public class SaveManager : MonoBehaviour
         LoadGame();
 
         //*********************************************************************************
+
+
+        if (instance != null)
+            Destroy(instance.gameObject);
+        else
+            instance = this;
+        if (dataHandler == null)
+            dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
+    }
+
+    private void Start()
+    {
+
     }
 
     public void NewGame()
@@ -55,18 +59,15 @@ public class SaveManager : MonoBehaviour
     {
         gameData = dataHandler.Load();
 
-        if(this.gameData==null)
+        if (this.gameData == null)
         {
-            Debug.Log("无保存数据");
+            Debug.Log("无保存数据，初始化新游戏数据");
             NewGame();
         }
-        
-        foreach (ISaveManager saveManager in saveManagers)
-        {
-            saveManager.LoadData(gameData);
-        }
 
-       
+        // 之前这里的 foreach 可能会因为 saveManagers 列表不全而失效
+        // 我们保留它用于更新当前场景已存在的物体
+        RefreshAllSaveManagers();
     }
     public void SaveGame()
     {
@@ -77,6 +78,29 @@ public class SaveManager : MonoBehaviour
         dataHandler.Save(gameData);
 
         
+    }
+    // 核心：新增一个公开方法，让单个物体可以随时加入并立刻加载数据
+    public void RegisterSaveManager(ISaveManager saveManager)
+    {
+        if (!saveManagers.Contains(saveManager))
+        {
+            saveManagers.Add(saveManager);
+        }
+
+        // 如果数据已经准备好了，立刻传给它！
+        if (gameData != null)
+        {
+            saveManager.LoadData(gameData);
+        }
+    }
+
+    private void RefreshAllSaveManagers()
+    {
+        saveManagers = FindAllSaveManagers();
+        foreach (ISaveManager sm in saveManagers)
+        {
+            sm.LoadData(gameData);
+        }
     }
 
     private void OnApplicationQuit()
@@ -94,11 +118,11 @@ public class SaveManager : MonoBehaviour
     }
     public bool HasNoSaveData()
     {
-        if(dataHandler.Load()!=null)
-        {
-            return true;
-        }
-        return false;
+        // 双重保险：即使 Awake 还没跑完（极端情况），这里也能自愈
+        if (dataHandler == null) return true;
+
+        GameData temp = dataHandler.Load();
+        return temp == null;
     }
 }
 
