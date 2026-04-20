@@ -20,7 +20,7 @@ public class FileDataHandler
         this.encryptData = _encryptData;
     }
 
-    public void Save(GameData _data)//¾ÍÊÇÏÈ×éºÏÂ·¾¶£¬È»ºóÈ·±£Â·¾¶´æÔÚ£¬²»´æÔÚ¾Í´´½¨£¬È»ºó°ÑÊı¾İ×ª»¯ÔÙĞ´ÈëÎÄ¼şÀïÃæ
+    public void Save(GameData _data)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½È·ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¾Í´ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
     {
         string fullPath = Path.Combine(dataDirPath, dataFileName);
 
@@ -45,7 +45,7 @@ public class FileDataHandler
 
         catch(Exception e)
         {
-            Debug.LogError("±£´æÎÄ¼ş´íÎó"+fullPath+"\n"+e);
+            Debug.LogError("ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½"+fullPath+"\n"+e);
         }
     }
 
@@ -67,14 +67,16 @@ public class FileDataHandler
                         dataToLoad = reader.ReadToEnd();
                     }
                 }
-                loadData = JsonUtility.FromJson<GameData>(dataToLoad);
-            
+
+                // å¦‚æœå¯ç”¨åŠ å¯†ï¼Œå…ˆè§£å¯†å†ååºåˆ—åŒ–
                 if(encryptData)
-                    dataToLoad =EncryptDecrypt(dataToLoad);
+                    dataToLoad = EncryptDecrypt(dataToLoad);
+
+                loadData = JsonUtility.FromJson<GameData>(dataToLoad);
             }
-            catch(Exception e)//·ÀÖ¹±¨´í
+            catch(Exception e)//ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½
             {
-                Debug.LogError("Î´ÄÜ´ÓÎÄ¼ş¼ÓÔØ´æµµ"+fullPath+"\n"+e);
+                Debug.LogError("Î´ï¿½Ü´ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ø´æµµ"+fullPath+"\n"+e);
             }
         }
         return loadData;
@@ -92,8 +94,8 @@ public class FileDataHandler
     {
         string modfiedData = "";
 
-        //Ã÷ÎÄ^ÃÜÔ¿=ÃÜÎÄ
-        //ÃÜÎÄ^ÃÜÔ¿=Ã÷ÎÄ
+        //ï¿½ï¿½ï¿½ï¿½^ï¿½ï¿½Ô¿=ï¿½ï¿½ï¿½ï¿½
+        //ï¿½ï¿½ï¿½ï¿½^ï¿½ï¿½Ô¿=ï¿½ï¿½ï¿½ï¿½
 
         for(int i=0;i<_data.Length;i++)
         {

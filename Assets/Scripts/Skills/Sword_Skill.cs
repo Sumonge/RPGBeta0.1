@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public enum SwordType
 }
 
 
-public class Sword_Skill : Skill
+public class Sword_Skill : Skill, ISaveManager
 {
 
     public SwordType swordType = SwordType.Regular;
@@ -80,7 +81,7 @@ public class Sword_Skill : Skill
 
     private void SetupGraivty()
     {
-        switch (swordType)//�޸ģ���if
+        switch (swordType)//�޸ģ���if
         {
             case SwordType.Bounce:
                 swordGravity = bounceGravity;
@@ -115,7 +116,7 @@ public class Sword_Skill : Skill
         GameObject newSword = Instantiate(swordPrefab, player.transform.position, transform.rotation);
         Sword_Skill_Controller newSwordScript = newSword.GetComponent<Sword_Skill_Controller>();
 
-        switch (swordType)//�޸�,��if
+        switch (swordType)//�޸�,��if
         {
             case SwordType.Bounce:
                 newSwordScript.SetupBounce(true, bounceAmount, bounceSpeed);
@@ -220,4 +221,21 @@ public class Sword_Skill : Skill
         return position;
     }
     #endregion
+
+    public void LoadData(GameData _data)
+    {
+        // 数据加载后重新检查解锁状态，延迟一帧确保UI_SkillTreeSlot已加载
+        StartCoroutine(DelayedCheckUnlock());
+    }
+
+    private IEnumerator DelayedCheckUnlock()
+    {
+        yield return null; // 等待一帧
+        CheckUnlock();
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        // 技能数据通过UI_SkillTreeSlot保存，此处无需操作
+    }
 }

@@ -18,7 +18,7 @@ public class PlayerPrimaryAttackState : PlayerState
     {
         base.Enter();
 
-        //AudioManager.instance.PlaySFX(1);//¹¥»÷ÒôÐ§
+        //AudioManager.instance.PlaySFX(1);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
 
         if (comboCounter > 2||Time.time>=lastTimeAttacked+comboWindow)
             comboCounter = 0;
@@ -31,8 +31,8 @@ public class PlayerPrimaryAttackState : PlayerState
             attackDir = xInput;
         #endregion
 
-
-        player.SetVelocity(player.attackMovement[comboCounter].x * attackDir, player.attackMovement[comboCounter].y);
+        if (!player.IsKnocked)
+            player.SetVelocity(player.attackMovement[comboCounter].x * attackDir, player.attackMovement[comboCounter].y);
 
         stateTimer = .1f;
     }

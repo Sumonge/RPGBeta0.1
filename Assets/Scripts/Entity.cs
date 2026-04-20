@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour
     [SerializeField] protected Vector2 knockbackPower;
     [SerializeField] protected float knockbackDuration;
     protected bool isKnocked;
+    public bool IsKnocked => isKnocked;
 
 
     [Header("Collision Info")]
@@ -82,8 +83,9 @@ public class Entity : MonoBehaviour
     {
         isKnocked=true;
         rb.velocity = new Vector2(knockbackPower.x * -facingDir, knockbackPower.y);
-        yield return new WaitForSeconds(knockbackDuration);
+        yield return new WaitForSeconds(Mathf.Min(knockbackDuration, 0.5f));
         isKnocked= false;
+        rb.velocity = new Vector2(0, rb.velocity.y);
         SetupZeroKnockbackPower();
     }
 
@@ -106,7 +108,7 @@ public class Entity : MonoBehaviour
     }
     public void SetVelocity(float _xVelocity, float _yVelocity)
     {
-        if (isKnocked) 
+        if (isKnocked)
             return;
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
         FlipController(_xVelocity);

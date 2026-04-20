@@ -22,7 +22,7 @@ public class PlayerStats : CharacterStats
 
         player.Die();
         GameManager.instance.lostCurrencyAmount = PlayerManager.instance.currency;
-        Debug.Log("Íæ¼ÒËÀÍö£¬¶ªÊ§µÄ»õ±ÒÊıÁ¿£º" + GameManager.instance.lostCurrencyAmount);
+        Debug.Log("ä¸¢å¤±æ•°é‡" + GameManager.instance.lostCurrencyAmount);
         PlayerManager.instance.currency = 0;
 
         GetComponent<PlayerItemDrop>()?.GenerateDrop();
@@ -31,10 +31,10 @@ public class PlayerStats : CharacterStats
     {
         base.DecreaseHealthBy(_damage);
 
-        if(_damage>GetMaxHealthValue()*.3f)
+        if(_damage>GetMaxHealthValue()*.15f)
         {
             player.SetupKnockbackPower(new Vector2(10, 15));
-            Debug.Log("¸ßÉËº¦");
+            player.fx.ScreenShake(player.fx.shakeHighDamage);
         }
 
         ItemData_Equipment currentArmor = Inventory.instance.GetEquipmentType(EquipmentType.Armor);
@@ -64,7 +64,7 @@ public class PlayerStats : CharacterStats
         totalDamage = CheckTargetArmor(_targetStats, totalDamage);
         _targetStats.TakeDamage(totalDamage);
         //DoMagicDamage(_targetStats);
-        //Èç¹ûÎäÆ÷¸½Ä§ÔòÔì³ÉÄ§·¨ÉËº¦
-        DoMagicDamage(_targetStats);//ÒÆ³ı»ğÏµÉËº¦Èç¹ûÏëµÄ»°ÒªÉ¾µôÕâÒ»ĞĞ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä§ï¿½ï¿½ï¿½ï¿½ï¿½Ä§ï¿½ï¿½ï¿½Ëºï¿½
+        DoMagicDamage(_targetStats);//ï¿½Æ³ï¿½ï¿½ï¿½Ïµï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ÒªÉ¾ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
     }
 }

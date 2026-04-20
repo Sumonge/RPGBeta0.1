@@ -11,30 +11,35 @@ public class UI_MainMenu : MonoBehaviour
 
     private void Start()
     {
-        if(SaveManager.instance.HasNoSaveData()==false)
-            continueButton.SetActive (false);
+        // å¦‚æœæœ‰å­˜æ¡£æ•°æ®ï¼Œæ˜¾ç¤ºç»§ç»­æŒ‰é’®
+        if(SaveManager.instance.HasNoSaveData() == false)
+            continueButton.SetActive(true);
+        else
+            continueButton.SetActive(false);
 
     }
 
     public void ContinueGame()
     {
-        StartCoroutine(LoadSceneWithFadeEffect(1.5f)); // 1ÃëµÄµ­³ö¶¯»­Ê±¼ä
+        // ç¡®ä¿åŠ è½½ä¿å­˜çš„æ¸¸æˆæ•°æ®
+        SaveManager.instance.LoadGame();
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f)); // 1ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
     }
     public void NewGame()
     {
-        SaveManager.instance.DeletSaveData();
-        StartCoroutine(LoadSceneWithFadeEffect(1.5f)); // 1ÃëµÄµ­³ö¶¯»­Ê±¼ä
+        SaveManager.instance.DeleteSaveData();
+        StartCoroutine(LoadSceneWithFadeEffect(1.5f)); // 1ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 
     }
     public void ExitGame()
     {
-        Debug.Log("ÍË³öÓÎÏ·");
+        Debug.Log("ï¿½Ë³ï¿½ï¿½ï¿½Ï·");
     }
 
     IEnumerator LoadSceneWithFadeEffect(float _delay)
     {
         fadeScreen.FadeOut();
-        yield return new WaitForSeconds(_delay); // µÈ´ıµ­³ö¶¯»­Íê³É
+        yield return new WaitForSeconds(_delay); // ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         SceneManager.LoadScene(sceneName);
     }
 }

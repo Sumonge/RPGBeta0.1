@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerDashState : PlayerState
 {
+
     public PlayerDashState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
     {
     }
@@ -18,6 +19,7 @@ public class PlayerDashState : PlayerState
         stateTimer = player.dashDuration;
 
         player.stats.MakeInvincible(true);
+
     }
 
     public override void Exit()
@@ -35,7 +37,8 @@ public class PlayerDashState : PlayerState
     {
         base.Update();
 
-        player.SetVelocity(player.dashSpeed * player.dashDir, 0);
+        if(!player.IsKnocked)
+            player.SetVelocity(player.dashSpeed * player.dashDir, 0);
 
         if (!player.IsGroundDetected() && player.IsWallDetected())
         {
@@ -44,5 +47,6 @@ public class PlayerDashState : PlayerState
 
         if (stateTimer < 0)
             stateMachine.ChangeState(player.idleState);
+        player.fx.CreateAfterImage();
     }
 }

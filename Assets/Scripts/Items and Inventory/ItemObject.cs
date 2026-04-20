@@ -14,7 +14,7 @@ public class ItemObject : MonoBehaviour
         if (itemData == null)
             return;
 
-        GetComponent<SpriteRenderer>().sprite = itemData.itemIcon;//icon¸Ä³ÉitemIconÁË
+        GetComponent<SpriteRenderer>().sprite = itemData.itemIcon;//iconï¿½Ä³ï¿½itemIconï¿½ï¿½
         gameObject.name = "Item object-" + itemData.itemName;
     }
 
@@ -33,10 +33,11 @@ public class ItemObject : MonoBehaviour
         if (!Inventory.instance.CanAddItem() && itemData.itemType == ItemType.Equipment)
         {
             rb.velocity = new Vector2(0, 7);
+            PlayerManager.instance.player.fx.CreatePopUpText("Inventory full");
             return;
         }
 
-        AudioManager.instance.PlaySFX(26, transform);//Ê°È¡ÒôÐ§
+        AudioManager.instance.PlaySFX(26, transform);
 
         Inventory.instance.AddItem(itemData);
         Destroy(gameObject);

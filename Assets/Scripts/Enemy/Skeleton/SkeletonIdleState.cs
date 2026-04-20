@@ -14,7 +14,7 @@ public override void Enter()
         base.Enter();
         stateTimer = enemy.idleTime;
 
-        AudioManager.instance.PlaySFX(16,enemy.transform);
+        AudioManager.instance.PlaySFX(16, enemy.transform);
 
 
     }

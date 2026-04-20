@@ -32,37 +32,33 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
     }
     private void Start()
     {
-        skillImage=GetComponent<Image>();
-
+        skillImage = GetComponent<Image>();
         ui = GetComponentInParent<UI>();
 
-        skillImage.color = lockedSkillColor;
-
-        if(unlocked)
-            skillImage.color=Color.white;
-        
+        // åˆå§‹åŒ–é¢œè‰²
+        UpdateSkillColor();
     }
 
     public void UnlockSkillSlot()
     {
         
-        //Öğ¼¶½âËø
+        //ï¿½ğ¼¶½ï¿½ï¿½ï¿½
         for (int i = 0; i < shouldBeUnlocked.Length; i++)
         {
             if (shouldBeUnlocked[i].unlocked == false)
             {
-                Debug.Log("ÎŞ·¨½âËø¼¼ÄÜ");
+                Debug.Log("ï¿½Ş·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 return;
             }
                
         }
-        //·ÖÖ§½âËø
-        //»òÕßÌí¼ÓÖØÖÃ¼¼ÄÜÊ÷µÄ¹¦ÄÜ£¬ÖØÖÃºóËùÓĞ¼¼ÄÜ¶¼Î´½âËø£¬Íæ¼Ò¿ÉÒÔÖØĞÂÑ¡Ôñ½âËøÂ·¾¶
+        //ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Ãºï¿½ï¿½ï¿½ï¿½Ğ¼ï¿½ï¿½Ü¶ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
         for (int i = 0; i < shouldBeLocked.Length; i++)
         {
             if (shouldBeLocked[i].unlocked == true)
             {
-                Debug.Log("ÎŞ·¨½âËø¼¼ÄÜ");
+                Debug.Log("ï¿½Ş·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 return;
             }
         }
@@ -70,7 +66,7 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
             return;
 
         unlocked = true;
-        skillImage.color = Color.white;
+        UpdateSkillColor();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -79,7 +75,7 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
 
         Vector2 mousePosition = Input.mousePosition;
 
-        // ³¢ÊÔ»ùÓÚ Canvas ×ö±¾µØ×ø±ê¶¨Î»²¢¼Ğ½ôµ½»­²¼ÄÚ£¬ÊÊÅä²»Í¬·Ö±æÂÊÓë»­²¼Ëõ·ÅÄ£Ê½
+        // ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½ Canvas ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê¶¨Î»ï¿½ï¿½ï¿½Ğ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ä²»Í¬ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ë»­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
         RectTransform tooltipRT = ui.skillToolTip.GetComponent<RectTransform>();
         Canvas canvas = ui.skillToolTip.GetComponentInParent<Canvas>();
         if (canvas != null && tooltipRT != null)
@@ -90,17 +86,17 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
             Vector2 localPoint;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRT, mousePosition, cam, out localPoint);
 
-            // ÍÆ¼öÆ«ÒÆ£¬¿É¸ù¾İĞèÇóµ÷Õû»ò»ùÓÚ tooltip ´óĞ¡¼ÆËã
+            // ï¿½Æ¼ï¿½Æ«ï¿½Æ£ï¿½ï¿½É¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ tooltip ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½
             Vector2 offset = new Vector2(150f, 150f);
 
             Vector2 desired = localPoint + offset;
 
-            // ¼ÆËã¿ÉÓÃ×îĞ¡/×î´óÖµÒÔ·À tooltip ³¬³ö»­²¼±ß½ç
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡/ï¿½ï¿½ï¿½Öµï¿½Ô·ï¿½ tooltip ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½
             Vector2 tooltipSize = tooltipRT.rect.size;
             Vector2 min = canvasRT.rect.min + (tooltipSize * tooltipRT.pivot);
             Vector2 max = canvasRT.rect.max - (tooltipSize * (Vector2.one - tooltipRT.pivot));
 
-            // Vector2 Ã»ÓĞ Clamp ¾²Ì¬·½·¨£¬°´·ÖÁ¿Ê¹ÓÃ Mathf.Clamp ½øĞĞ¼Ğ½ô
+            // Vector2 Ã»ï¿½ï¿½ Clamp ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ Mathf.Clamp ï¿½ï¿½ï¿½Ğ¼Ğ½ï¿½
             desired = new Vector2(
                 Mathf.Clamp(desired.x, min.x, max.x),
                 Mathf.Clamp(desired.y, min.y, max.y)
@@ -110,7 +106,7 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
         }
         else
         {
-            // »ØÍËµ½ÆÁÄ»×ø±êµÄ¼òµ¥Âß¼­£¨±£³ÖÔ­ÓĞĞĞÎª£©
+            // ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
             float XOffset = 0;
             float YOffset = 0;
 
@@ -133,24 +129,47 @@ public class UI_SkillTreeSlot : MonoBehaviour,IPointerEnterHandler, IPointerExit
         ui.skillToolTip.HideToolTip();
     }
 
+    private void UpdateSkillColor()
+    {
+        // ç¡®ä¿skillImageå·²åˆå§‹åŒ–
+        if (skillImage == null)
+            skillImage = GetComponent<Image>();
+
+        if (skillImage != null)
+        {
+            skillImage.color = unlocked ? Color.white : lockedSkillColor;
+        }
+    }
+
     public void LoadData(GameData _data)
     {
         if (_data.skillTree.TryGetValue(skillName, out bool value))
         {
             unlocked = value;
+            UpdateSkillColor();
+        }
+        else
+        {
         }
     }
 
     public void SaveData(ref GameData _data)
     {
-        if (_data.skillTree.TryGetValue(skillName, out bool value))
+        if (string.IsNullOrEmpty(skillName))
         {
-            _data.skillTree.Remove(skillName);
-            _data.skillTree.Add(skillName, unlocked);
+            Debug.LogError("æŠ€èƒ½åç§°ä¸ºç©ºï¼Œæ— æ³•ä¿å­˜æŠ€èƒ½æ•°æ®");
+            return;
+        }
+
+        // ç›´æ¥è®¾ç½®æˆ–æ›´æ–°æŠ€èƒ½çŠ¶æ€
+        if (_data.skillTree.ContainsKey(skillName))
+        {
+            _data.skillTree[skillName] = unlocked;
         }
         else
         {
             _data.skillTree.Add(skillName, unlocked);
         }
+
     }
 }

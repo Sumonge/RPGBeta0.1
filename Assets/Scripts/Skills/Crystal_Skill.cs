@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Crystal_Skill : Skill
+public class Crystal_Skill : Skill, ISaveManager
 {
     [SerializeField] private float crystalDuration;
     [SerializeField] private GameObject crystalPrefab;
@@ -168,4 +168,20 @@ public class Crystal_Skill : Skill
         ;
     }
 
+    public void LoadData(GameData _data)
+    {
+        // 数据加载后重新检查解锁状态，延迟一帧确保UI_SkillTreeSlot已加载
+        StartCoroutine(DelayedCheckUnlock());
+    }
+
+    private IEnumerator DelayedCheckUnlock()
+    {
+        yield return null; // 等待一帧
+        CheckUnlock();
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        // 技能数据通过UI_SkillTreeSlot保存，此处无需操作
+    }
 }

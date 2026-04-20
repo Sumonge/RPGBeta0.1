@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Android;
 
@@ -177,7 +176,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     public void UpdateStatsUI()
     {
-        for (int i = 0; i < statSlot.Length; i++)//�����ַ�����UI
+        for (int i = 0; i < statSlot.Length; i++)//�����ַ�����UI
         {
             statSlot[i].UpdateStatValueUI();
         }
@@ -272,10 +271,10 @@ public class Inventory : MonoBehaviour, ISaveManager
         {
             if (stashDictionary.TryGetValue(_requireMaterials[i].data, out InventoryItem stashValue))
             {
-                //��ʹ�ò���
+                //��ʹ�ò���
                 if (stashValue.stackSize < _requireMaterials[i].stackSize)
                 {
-                    Debug.Log("ȱ�ٺϳɲ���");
+                    Debug.Log("ȱ�ٺϳɲ���");
 
                     return false;
                 }
@@ -286,7 +285,7 @@ public class Inventory : MonoBehaviour, ISaveManager
             }
             else
             {
-                Debug.Log("ȱ�ٺϳɲ���");
+                Debug.Log("ȱ�ٺϳɲ���");
                 return false;
             }
         }
@@ -295,7 +294,7 @@ public class Inventory : MonoBehaviour, ISaveManager
             RemoveItem(materialsToRemove[i].data);
         }
         AddItem(_itemToCraft);
-        Debug.Log("������Ʒ" + _itemToCraft.name);
+        Debug.Log("������Ʒ" + _itemToCraft.name);
         return true;
     }
 
@@ -333,7 +332,7 @@ public class Inventory : MonoBehaviour, ISaveManager
         }
         else
         {
-            Debug.Log("ҩ��������ȴ��");
+            Debug.Log("ҩ��������ȴ��");
         }
     }
 
@@ -387,14 +386,46 @@ public class Inventory : MonoBehaviour, ISaveManager
     private List<ItemData> GetItemDataBase()
     {
         List<ItemData> itemDataBase = new List<ItemData>();
-        string[] assetNames = AssetDatabase.FindAssets("", new[] { "Assets/Data" });
 
-        foreach (string SOName in assetNames)
+        // 首先尝试从Resources加载（编辑器和运行时都可用）
+        ItemData[] resourcesItems = Resources.LoadAll<ItemData>("Data");
+        if (resourcesItems != null && resourcesItems.Length > 0)
         {
-            var SOpath = AssetDatabase.GUIDToAssetPath(SOName);
-            var itemData = AssetDatabase.LoadAssetAtPath<ItemData>(SOpath);
-            itemDataBase.Add(itemData);
+            itemDataBase.AddRange(resourcesItems);
+            #if UNITY_EDITOR
+            Debug.Log($"从Resources/Data加载了 {resourcesItems.Length} 个物品数据");
+            #endif
         }
+        else
+        {
+            #if UNITY_EDITOR
+            // 如果在Resources中没找到，在编辑器中使用AssetDatabase作为回退
+            Debug.LogWarning("未在Resources/Data目录中找到物品数据，使用AssetDatabase回退。建议将物品数据移动到Resources/Data目录以确保运行时可用。");
+
+            string[] assetNames = UnityEditor.AssetDatabase.FindAssets("", new[] { "Assets/Data" });
+
+            foreach (string SOName in assetNames)
+            {
+                var SOpath = UnityEditor.AssetDatabase.GUIDToAssetPath(SOName);
+                var itemData = UnityEditor.AssetDatabase.LoadAssetAtPath<ItemData>(SOpath);
+                if (itemData != null)
+                    itemDataBase.Add(itemData);
+            }
+
+            if (itemDataBase.Count > 0)
+            {
+            }
+            #else
+            // 运行时且Resources中没有数据，记录错误
+            Debug.LogError("运行时无法加载物品数据：未在Resources/Data目录中找到物品数据。请确保所有ItemData资产位于Resources/Data目录中。");
+            #endif
+        }
+
+        if (itemDataBase.Count == 0)
+        {
+            Debug.LogWarning("物品数据库为空，可能导致存档加载失败。");
+        }
+
         return itemDataBase;
     }
 }

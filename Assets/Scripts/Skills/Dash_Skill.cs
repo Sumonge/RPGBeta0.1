@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Dash_Skill : Skill
+public class Dash_Skill : Skill, ISaveManager
 {
     [Header("Dash")]
     [SerializeField] private UI_SkillTreeSlot dashUnlockButton;
@@ -29,7 +29,7 @@ public class Dash_Skill : Skill
 
         dashUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockDash);
         cloneOnDashUnlockButton.GetComponent<Button>().onClick.AddListener(CloneOnDashUnlocked);
-        cloneOnArrivalUnlockButton.GetComponent<Button>().onClick.AddListener(CloneOnArrivalUnlocked);//�պ��޸��¼�����
+        cloneOnArrivalUnlockButton.GetComponent<Button>().onClick.AddListener(CloneOnArrivalUnlocked);//�պ��޸��¼�����
     }
     protected override void CheckUnlock()
     {
@@ -68,5 +68,22 @@ public class Dash_Skill : Skill
     {
         if (cloneOnArrivalUnlocked)
             SkillManager.instance.clone.CreateClone(player.transform, Vector3.zero);
+    }
+
+    public void LoadData(GameData _data)
+    {
+        // 数据加载后重新检查解锁状态，延迟一帧确保UI_SkillTreeSlot已加载
+        StartCoroutine(DelayedCheckUnlock());
+    }
+
+    private IEnumerator DelayedCheckUnlock()
+    {
+        yield return null; // 等待一帧
+        CheckUnlock();
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        // 技能数据通过UI_SkillTreeSlot保存，此处无需操作
     }
 }

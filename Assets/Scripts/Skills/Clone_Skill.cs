@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class Clone_Skill : Skill
+public class Clone_Skill : Skill, ISaveManager
 {
 
 
@@ -113,7 +113,24 @@ public class Clone_Skill : Skill
     }
     private IEnumerator CloneDelayCorotine(Transform _transform, Vector3 _offset)
     {
-        yield return new WaitForSeconds(.4f); //�ӳ�ֵ
+        yield return new WaitForSeconds(.4f); //�ӳ�ֵ
         CreateClone(_transform, _offset);
+    }
+
+    public void LoadData(GameData _data)
+    {
+        // 数据加载后重新检查解锁状态，延迟一帧确保UI_SkillTreeSlot已加载
+        StartCoroutine(DelayedCheckUnlock());
+    }
+
+    private IEnumerator DelayedCheckUnlock()
+    {
+        yield return null; // 等待一帧
+        CheckUnlock();
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        // 技能数据通过UI_SkillTreeSlot保存，此处无需操作
     }
 }

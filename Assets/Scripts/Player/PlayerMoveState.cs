@@ -12,7 +12,7 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.Enter();
 
-        AudioManager.instance.PlaySFX(24,null);
+        AudioManager.instance.PlaySFX(24, null);
     }
 
     public override void Exit()
@@ -26,10 +26,11 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.Update();
 
-        player.SetVelocity(xInput*player.moveSpeed, rb.velocity.y);
+        if(!player.IsKnocked)
+            player.SetVelocity(xInput*player.moveSpeed, rb.velocity.y);
 
         if (xInput == 0||player.IsWallDetected())
             stateMachine.ChangeState(player.idleState);
-        
+
     }
 }

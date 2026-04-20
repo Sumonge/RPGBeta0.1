@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Blackhole_Skill : Skill
+public class Blackhole_Skill : Skill, ISaveManager
 {
     [SerializeField] private UI_SkillTreeSlot blackholeUnlockButton;
     public bool blackholeUnlocked { get; private set; }
@@ -37,7 +37,7 @@ public class Blackhole_Skill : Skill
 
         currentBlackhole.SetupBlackhole(maxSize, growSpeed, shinkSpeed, amountOfAttacks, cloneCooldown, blackholeDuration);
 
-        AudioManager.instance.PlaySFX(5,null);//�ڶ�������Ч
+        AudioManager.instance.PlaySFX(5, null);
     }
 
     protected override void Start()
@@ -75,5 +75,22 @@ public class Blackhole_Skill : Skill
         base.CheckUnlock();
 
         UnlockBlackhole();
+    }
+
+    public void LoadData(GameData _data)
+    {
+        // 数据加载后重新检查解锁状态，延迟一帧确保UI_SkillTreeSlot已加载
+        StartCoroutine(DelayedCheckUnlock());
+    }
+
+    private IEnumerator DelayedCheckUnlock()
+    {
+        yield return null; // 等待一帧
+        CheckUnlock();
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+        // 技能数据通过UI_SkillTreeSlot保存，此处无需操作
     }
 }

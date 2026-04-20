@@ -6,13 +6,13 @@ public class Checkpoint : MonoBehaviour
     public string id;
     public bool activationStats;
 
-    // Ã»ÓÐ»ñÈ¡¾ÍÖ±½Ó½«×é¼þÏÈÇÀ¹ýÀ´
+    // Ã»ï¿½Ð»ï¿½È¡ï¿½ï¿½Ö±ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     private void Awake()
     {
         EnsureAnimReferenced();
     }
 
-    // 2. ·â×°Ò»¸ö·½·¨£¬È·±£ anim ²»Îª¿Õ
+    // 2. ï¿½ï¿½×°Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ anim ï¿½ï¿½Îªï¿½ï¿½
     private void EnsureAnimReferenced()
     {
         if (anim == null)
@@ -37,13 +37,14 @@ public class Checkpoint : MonoBehaviour
 
     public void ActivateCheckpoint()
     {
-        activationStats = true;
-
-        // 3. ÔÚÊ¹ÓÃÇ°ÔÙ´ÎÈ·±£×é¼þÒÑ±»ÒýÓÃ£¨·ÀÖ¹ LoadData ÔÚ Awake Ö®Ç°´¥·¢µÄ¼«¶ËÇé¿ö£©
+        // 3. ä½¿ï¿½ (ï¿½ï¿½ï¿½) Ç° ï¿½Ù´Î¼ï¿½ï¿½é½±ï¿½ï¿½ï¿½Ñ±ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ LoadData ï¿½ï¿½ Awake Ö®Ç°ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
         EnsureAnimReferenced();
 
         if(activationStats==false)
-        AudioManager.instance.PlaySFX(25, transform);
+        {
+            activationStats = true;
+            AudioManager.instance.PlaySFX(25, null);
+        }
 
         if (anim != null)
         {
@@ -51,7 +52,7 @@ public class Checkpoint : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"ÎïÌå {gameObject.name} ÉÏÕÒ²»µ½ Animator ×é¼þ£¡");
+            Debug.LogError($"ï¿½ï¿½ï¿½ï¿½ {gameObject.name} ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ Animator ï¿½ï¿½ï¿½ï¿½ï¿½");
         }
     }
 }

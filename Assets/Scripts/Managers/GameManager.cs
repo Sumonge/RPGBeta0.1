@@ -44,89 +44,199 @@ public class GameManager : MonoBehaviour,ISaveManager
 
     public void LoadData(GameData _data)
     {
-        LoadLostCurrency(_data);
-
-        LoadCheckPoints(_data);
-
-        foreach (Checkpoint checkpoint in checkpoints)
+        try
         {
-            if (_data.closestCheckpointId == checkpoint.id)
+            LoadLostCurrency(_data);
+            LoadCheckPoints(_data);
+
+            // 检查checkpoints是否已初始化
+            if (checkpoints == null || checkpoints.Length == 0)
             {
+                checkpoints = FindObjectsOfType<Checkpoint>();
+            }
 
-                // ����ƫ�� 1.5 ����λ����ֹ��������
-                Vector3 spawnPosition = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 1.5f, checkpoint.transform.position.z);
-                PlayerManager.instance.player.transform.position = spawnPosition;
-                //�޸�ǰ���룬�����������PlayerManager.instance.player.transform.position = checkpoint.transform.position;
-
+            // 查找最近的检查点并设置玩家位置
+            if (!string.IsNullOrEmpty(_data.closestCheckpointId))
+            {
+                foreach (Checkpoint checkpoint in checkpoints)
+                {
+                    if (checkpoint != null && _data.closestCheckpointId == checkpoint.id)
+                    {
+                        // 检查PlayerManager和player引用
+                        if (PlayerManager.instance != null && PlayerManager.instance.player != null)
+                        {
+                            Vector3 spawnPosition = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 1.5f, checkpoint.transform.position.z);
+                            PlayerManager.instance.player.transform.position = spawnPosition;
+                            Debug.Log("玩家重生在检查点: " + checkpoint.id);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("PlayerManager或player引用为空，无法设置重生位置");
+                        }
+                        break;
+                    }
+                }
             }
         }
-
+        catch (System.Exception e)
+        {
+            Debug.LogError("加载游戏数据失败: " + e.Message);
+        }
     }
 
-    // 3. Э�̱��ֲ�������
+    // 3. Э�̱��ֲ�������
 
 
     private void LoadCheckPoints(GameData _data)
     {
-        foreach (KeyValuePair<string, bool> pair in _data.checkpoints)
+        try
         {
-            foreach (Checkpoint checkpoint in checkpoints)
+            // 确保checkpoints已初始化
+            if (checkpoints == null || checkpoints.Length == 0)
             {
-                if (checkpoint.id == pair.Key && pair.Value == true)
+                checkpoints = FindObjectsOfType<Checkpoint>();
+            }
+
+            foreach (KeyValuePair<string, bool> pair in _data.checkpoints)
+            {
+                foreach (Checkpoint checkpoint in checkpoints)
                 {
-                    checkpoint.ActivateCheckpoint();
+                    if (checkpoint != null && checkpoint.id == pair.Key && pair.Value == true)
+                    {
+                        checkpoint.ActivateCheckpoint();
+                    }
                 }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("加载检查点数据失败: " + e.Message);
         }
     }
 
     private void LoadLostCurrency(GameData _data)
     {
-        lostCurrencyAmount = _data.lostCurrencyAmount;
-        lostCurrencyX = _data.lostCurrencyX;
-        lostCurrencyY = _data.lostCurrencyY;
-
-        if(lostCurrencyAmount>0)
+        try
         {
-            GameObject newLostCurrency = Instantiate(lostCurrencyPrefab, new Vector3(lostCurrencyX, lostCurrencyY, 0), Quaternion.identity);
-            newLostCurrency.GetComponent<LostCurrencyController>().currency=lostCurrencyAmount;
-        }
+            lostCurrencyAmount = _data.lostCurrencyAmount;
+            lostCurrencyX = _data.lostCurrencyX;
+            lostCurrencyY = _data.lostCurrencyY;
 
-        lostCurrencyAmount = 0;
+            if(lostCurrencyAmount>0)
+            {
+                if (lostCurrencyPrefab != null)
+                {
+                    GameObject newLostCurrency = Instantiate(lostCurrencyPrefab, new Vector3(lostCurrencyX, lostCurrencyY, 0), Quaternion.identity);
+                    LostCurrencyController controller = newLostCurrency.GetComponent<LostCurrencyController>();
+                    if (controller != null)
+                    {
+                        controller.currency = lostCurrencyAmount;
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("lostCurrencyPrefab为空，无法生成丢失货币");
+                }
+            }
+
+            lostCurrencyAmount = 0;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("加载丢失货币数据失败: " + e.Message);
+        }
     }
 
     public void SaveData(ref GameData _data)
     {
-        _data.lostCurrencyAmount = lostCurrencyAmount;
-        _data.lostCurrencyX=player.position.x;
-        _data.lostCurrencyY=player.position.y;
-        Debug.Log("�ѱ������" + lostCurrencyAmount);
-
-        if(FindClosestCheckpoint()!=null)
-            _data.closestCheckpointId = FindClosestCheckpoint().id;
-
-        _data.checkpoints.Clear();
-
-        foreach (Checkpoint checkpoint in checkpoints)
+        try
         {
-            _data.checkpoints.Add(checkpoint.id, checkpoint.activationStats);
+            _data.lostCurrencyAmount = lostCurrencyAmount;
+
+            // 检查player引用
+            if (player != null)
+            {
+                _data.lostCurrencyX = player.position.x;
+                _data.lostCurrencyY = player.position.y;
+            }
+            else
+            {
+                _data.lostCurrencyX = 0;
+                _data.lostCurrencyY = 0;
+                Debug.LogWarning("player引用为空，无法保存丢失货币位置");
+            }
+
+            Debug.Log("已保存丢失货币: " + lostCurrencyAmount);
+
+            // 确保checkpoints已初始化
+            if (checkpoints == null || checkpoints.Length == 0)
+            {
+                checkpoints = FindObjectsOfType<Checkpoint>();
+            }
+
+            Checkpoint closest = FindClosestCheckpoint();
+            if(closest != null)
+                _data.closestCheckpointId = closest.id;
+            else
+                _data.closestCheckpointId = string.Empty;
+
+            _data.checkpoints.Clear();
+
+            foreach (Checkpoint checkpoint in checkpoints)
+            {
+                if (checkpoint != null)
+                {
+                    _data.checkpoints.Add(checkpoint.id, checkpoint.activationStats);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("保存游戏数据失败: " + e.Message);
         }
     }
 
     private Checkpoint FindClosestCheckpoint()
     {
-        float closesDistance=Mathf.Infinity;
-        Checkpoint closestCheckpoint=null;
-        foreach(var checkpoint in checkpoints)
+        try
         {
-            float distanceToCheckpoint=Vector2.Distance(player.position,checkpoint.transform.position);
-            if(distanceToCheckpoint<closesDistance&&checkpoint.activationStats==true)
+            // 检查必要引用
+            if (player == null)
             {
-                closesDistance = distanceToCheckpoint;
-                closestCheckpoint = checkpoint;
+                Debug.LogWarning("player引用为空，无法查找最近检查点");
+                return null;
             }
+
+            // 确保checkpoints已初始化
+            if (checkpoints == null || checkpoints.Length == 0)
+            {
+                checkpoints = FindObjectsOfType<Checkpoint>();
+                if (checkpoints.Length == 0)
+                    return null;
+            }
+
+            float closesDistance = Mathf.Infinity;
+            Checkpoint closestCheckpoint = null;
+
+            foreach (var checkpoint in checkpoints)
+            {
+                if (checkpoint != null && checkpoint.activationStats == true)
+                {
+                    float distanceToCheckpoint = Vector2.Distance(player.position, checkpoint.transform.position);
+                    if (distanceToCheckpoint < closesDistance)
+                    {
+                        closesDistance = distanceToCheckpoint;
+                        closestCheckpoint = checkpoint;
+                    }
+                }
+            }
+            return closestCheckpoint;
         }
-        return closestCheckpoint;
+        catch (System.Exception e)
+        {
+            Debug.LogError("查找最近检查点失败: " + e.Message);
+            return null;
+        }
     }
 
     public void PauseGame(bool _pause)

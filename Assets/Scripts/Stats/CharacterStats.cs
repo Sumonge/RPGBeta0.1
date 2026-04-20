@@ -9,15 +9,15 @@ public class CharacterStats : MonoBehaviour
     private EntityFX fx;
 
     [Header("Major stats")]
-    public Stat strength;//±©»÷ÉËº¦
-    public Stat agility;//±©»÷ÂÊ
-    public Stat intelligence;//·¨¿¹
-    public Stat vitality;//Ñ©Á«Ôö¼Ó
+    public Stat strength;//ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½
+    public Stat agility;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public Stat intelligence;//ï¿½ï¿½ï¿½ï¿½
+    public Stat vitality;//Ñ©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     [Header("Offsive stats")]
     public Stat damage;
     public Stat critChance;
-    public Stat critPower;//Ä¬ÈÏÖµÎª1.5
+    public Stat critPower;//Ä¬ï¿½ï¿½ÖµÎª1.5
 
     [Header("Defensive stats")]
     public Stat maxHealth;
@@ -31,9 +31,9 @@ public class CharacterStats : MonoBehaviour
     public Stat lightingDamage;
 
 
-    public bool isIgnited;//³¬Ê±ÊÜÉË
-    public bool isChilled;//¼õÉÙ20ÉËº¦
-    public bool isShocked;//20µÄ¹¥»÷Ê§Îó
+    public bool isIgnited;//ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+    public bool isChilled;//ï¿½ï¿½ï¿½ï¿½20ï¿½Ëºï¿½
+    public bool isShocked;//20ï¿½Ä¹ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 
     [SerializeField] private float ailmentsDuration = 4;
     private float ignitedTimer;
@@ -114,6 +114,7 @@ public class CharacterStats : MonoBehaviour
 
     public virtual void DoDamage(CharacterStats _targetStats)
     {
+        bool criticalStrike = false;
 
         if (TargetCanAvoidAttack(_targetStats))
             return;
@@ -124,13 +125,18 @@ public class CharacterStats : MonoBehaviour
 
         if (CanCrit())
         {
+            criticalStrike = true;
             totalDamage = CalculateCriticalDamage(totalDamage);
         }
+
+        fx.CreateHix(_targetStats.transform,criticalStrike);
+
+
         totalDamage = CheckTargetArmor(_targetStats, totalDamage);
         _targetStats.TakeDamage(totalDamage);
         //DoMagicDamage(_targetStats);
-        //Èç¹ûÎäÆ÷¸½Ä§ÔòÔì³ÉÄ§·¨ÉËº¦
-        DoMagicDamage(_targetStats);//ÒÆ³ý»ðÏµÉËº¦Èç¹ûÏëµÄ»°ÒªÉ¾µôÕâÒ»ÐÐ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä§ï¿½ï¿½ï¿½ï¿½ï¿½Ä§ï¿½ï¿½ï¿½Ëºï¿½
+        DoMagicDamage(_targetStats);//ï¿½Æ³ï¿½ï¿½ï¿½Ïµï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ÒªÉ¾ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
     }
     #region Magic and ailemnts
     public virtual void DoMagicDamage(CharacterStats _targetStates)
@@ -271,7 +277,7 @@ public class CharacterStats : MonoBehaviour
                 }
 
             }
-            if (closestEnemy == null)//ÁôÏÂÄã²»Ïë´òµÄÄ¿±ê
+            if (closestEnemy == null)//ï¿½ï¿½ï¿½ï¿½ï¿½ã²»ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
                 closestEnemy = transform;
         }
         if (closestEnemy != null)
@@ -280,9 +286,9 @@ public class CharacterStats : MonoBehaviour
 
             newShickStrike.GetComponent<ShockStrike_Controller>().Setup(shockDamage, closestEnemy.GetComponent<CharacterStats>());
         }
-        //ÕÒµ½×î½üµÄ´¥·¢Æ÷£¬Ö»ÔÚµÐÈËÖ®ÖÐ
-        //ÐèÒª¼ÆÊ±±í
-        //½¨Á¢µç»÷
+        //ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Úµï¿½ï¿½ï¿½Ö®ï¿½ï¿½
+        //ï¿½ï¿½Òªï¿½ï¿½Ê±ï¿½ï¿½
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
     private void ApplyIgniteDamage()
     {
@@ -332,9 +338,13 @@ public class CharacterStats : MonoBehaviour
     protected virtual void DecreaseHealthBy(int _damage)
     {
         if (isVulnerable)
-            _damage = Mathf.RoundToInt(_damage * 1.1f);//Ò×ËébuffÔö¼Ó10%µÄÉËº¦
+            _damage = Mathf.RoundToInt(_damage * 1.1f);//ï¿½ï¿½ï¿½ï¿½buffï¿½ï¿½ï¿½ï¿½10%ï¿½ï¿½ï¿½Ëºï¿½
 
         currentHealth -= _damage;
+
+        if(_damage>0)
+            fx.CreatePopUpText(_damage.ToString());
+
         if (onHealthChanged != null)
             onHealthChanged();
     }

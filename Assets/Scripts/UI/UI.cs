@@ -27,7 +27,7 @@ public class UI : MonoBehaviour,ISaveManager
 
     private void Awake()
     {
-        SwitchTo(skillTreeUI);//ĞèÒªÏÈ´ò¿ª¼¼ÄÜÊ÷½çÃæ£¬²ÅÄÜÕıÈ·ÉèÖÃ¼¼ÄÜÊ÷½çÃæÉÏ¼¼ÄÜÍ¼±êµÄ tooltip µÄÒıÓÃ
+        SwitchTo(skillTreeUI);//ï¿½ï¿½Òªï¿½È´ò¿ª¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ tooltip ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         fadeScreen.gameObject.SetActive(true);
     }
@@ -57,10 +57,10 @@ public class UI : MonoBehaviour,ISaveManager
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // ¹Ø±ÕËùÓĞ²Ëµ¥
+            // ï¿½Ø±ï¿½ï¿½ï¿½ï¿½Ğ²Ëµï¿½
             SwitchTo(null);
 
-            // Òş²ØËùÓĞ¿ÉÄÜµ¥¶ÀÏÔÊ¾µÄ UI ÔªËØ£¨tooltip / craft window£©
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¿ï¿½ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ UI Ôªï¿½Ø£ï¿½tooltip / craft windowï¿½ï¿½
             if (itemToolTip != null)
                 itemToolTip.gameObject.SetActive(false);
 
@@ -80,15 +80,15 @@ public class UI : MonoBehaviour,ISaveManager
 
         for (int i = 0; i < transform.childCount; i++)
         {
-            bool fadeScreen = transform.GetChild(i).GetComponent<UI_FadeScreen>() != null;//ĞèÒª±£³Öµ­Èëµ­³ö½çÃæÉÏµÄÆäËûUIÔªËØµÄÏÔÊ¾×´Ì¬²»±ä
+            bool fadeScreen = transform.GetChild(i).GetComponent<UI_FadeScreen>() != null;//ï¿½ï¿½Òªï¿½ï¿½ï¿½Öµï¿½ï¿½ëµ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½UIÔªï¿½Øµï¿½ï¿½ï¿½Ê¾×´Ì¬ï¿½ï¿½ï¿½ï¿½
 
             if (fadeScreen == false)
                 transform.GetChild(i).gameObject.SetActive(false);
         }
         if (_menu != null)
         {
-            // ¡¾ĞŞ¸Ä¡¿Ö»ÓĞµ± AudioManager ´æÔÚÇÒ¡°ÔÊĞí²¥·Å¡±Ê±²Å²¥ÉùÒô
-            // ÕâÑù¼´Ê¹ Awake Àïµ÷ÓÃÁË SwitchTo£¬ÓÉÓÚ canPlaySFX »¹ÊÇ false£¬ÉùÒô»á±»À¹½Ø
+            // ï¿½ï¿½ï¿½Ş¸Ä¡ï¿½Ö»ï¿½Ğµï¿½ AudioManager ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¡ï¿½Ê±ï¿½Å²ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ Awake ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SwitchToï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ canPlaySFX ï¿½ï¿½ï¿½ï¿½ falseï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á±»ï¿½ï¿½ï¿½ï¿½
             if (AudioManager.instance != null && AudioManager.instance.canPlaySFX)
             {
                 AudioManager.instance.PlaySFX(27, null);
