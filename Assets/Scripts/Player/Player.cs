@@ -55,6 +55,8 @@ public class Player : Entity
     public PlayerBlackholeState blackHole { get; private set; }
     public PlayerDeadState deadState { get; private set; }
 
+    public PlayerFx fx { get; private set; }
+
 
 
     #region States
@@ -85,6 +87,8 @@ public class Player : Entity
     protected override void Start()
     {
         base.Start();
+
+        fx = GetComponent<PlayerFx>();
 
         skill = SkillManager.instance;
 

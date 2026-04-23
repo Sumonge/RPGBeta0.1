@@ -42,7 +42,7 @@ public class Clone_Skill_Controller : MonoBehaviour
     {
         if (_canAttack)
         {
-            anim.SetInteger("AttackNumber", UnityEngine.Random.Range(1, 3)); //Ôö¼ÓÒýÓÃ
+            anim.SetInteger("AttackNumber", UnityEngine.Random.Range(1, 3)); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         }
         attackMultiplier = _attackMultiplier;
         player = _player;
@@ -98,8 +98,6 @@ public class Clone_Skill_Controller : MonoBehaviour
     }
     private void FaceClosestTarget()
     {
-
-
         if (closestEnemy != null)
         {
             if (transform.position.x > closestEnemy.position.x)
@@ -108,6 +106,13 @@ public class Clone_Skill_Controller : MonoBehaviour
                 transform.Rotate(0, 180, 0);
             }
         }
-
+        else if (player != null)
+        {
+            if (player.transform.position.x < transform.position.x)
+            {
+                facingDir = -1;
+                transform.Rotate(0, 180, 0);
+            }
+        }
     }
 }

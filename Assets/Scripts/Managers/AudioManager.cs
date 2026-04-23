@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour
         }
 
         instance = this;
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
         canPlaySFX = false;

@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+
+[RequireComponent (typeof(Rigidbody2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(EnemyStats))]
+[RequireComponent(typeof(EntityFX))]
+[RequireComponent(typeof(ItemDrop))]
+
+
+
 public class Enemy : Entity
 {
     [SerializeField]protected LayerMask whatIsPlayer;
@@ -28,6 +37,14 @@ public class Enemy : Entity
     [HideInInspector]public float lastTimeAttacked;
 
     public EnemyStateMachine stateMachine { get; private set; }
+
+    public EntityFX fx { get; private set; }
+
+    override protected void Start()
+    {
+        base.Start();
+        fx = GetComponent<EntityFX>();
+    }
     public string lastAnimBoolName {  get; private set; }
     protected override void Awake()
     {
@@ -39,8 +56,9 @@ public class Enemy : Entity
     protected override void Update()
     {
         base.Update();
-        
-        stateMachine.currentState.Update();
+
+        if (stateMachine.currentState != null)
+            stateMachine.currentState.Update();
     }
     public virtual void AssignLastAnimName(string _animBoolName)
     {

@@ -23,12 +23,17 @@ public class GameManager : MonoBehaviour,ISaveManager
         if (instance != null)
             Destroy(instance.gameObject);
         else
+        {
             instance = this;
+            transform.SetParent(null);
+            DontDestroyOnLoad(gameObject);
+        }
     }
     private void Start()
     {
         checkpoints = FindObjectsOfType<Checkpoint>();
-        player = PlayerManager.instance.player.transform;
+        if(PlayerManager.instance != null && PlayerManager.instance.player != null)
+            player = PlayerManager.instance.player.transform;
     }
     private void Update()
     {
@@ -67,11 +72,9 @@ public class GameManager : MonoBehaviour,ISaveManager
                         {
                             Vector3 spawnPosition = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 1.5f, checkpoint.transform.position.z);
                             PlayerManager.instance.player.transform.position = spawnPosition;
-                            Debug.Log("玩家重生在检查点: " + checkpoint.id);
                         }
                         else
                         {
-                            Debug.LogWarning("PlayerManager或player引用为空，无法设置重生位置");
                         }
                         break;
                     }
@@ -83,9 +86,6 @@ public class GameManager : MonoBehaviour,ISaveManager
             Debug.LogError("加载游戏数据失败: " + e.Message);
         }
     }
-
-    // 3. Э�̱��ֲ�������
-
 
     private void LoadCheckPoints(GameData _data)
     {

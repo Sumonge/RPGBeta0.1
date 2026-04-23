@@ -14,14 +14,18 @@ public class PlayerManager : MonoBehaviour, ISaveManager
         if (instance != null)
             Destroy(instance.gameObject);
         else
+        {
             instance = this;
+            transform.SetParent(null);
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
     public bool HaveEnoughSkillPoint(int _sp)
     {
         if (_sp > currency)
         {
-            Debug.Log("技能点不足");
+            Debug.Log("锟斤拷锟杰点不锟斤拷");
             return false;
         }
         currency -= _sp;

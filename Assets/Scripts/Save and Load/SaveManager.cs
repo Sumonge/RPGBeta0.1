@@ -65,6 +65,7 @@ public class SaveManager : MonoBehaviour
         }
 
         instance = this;
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
         // 初始化数据处理器
@@ -115,9 +116,13 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
-            // 如果没有游戏数据，尝试加载
-            Debug.LogWarning("场景加载后gameData为空，尝试加载游戏数据");
-            LoadGame();
+            // 只有在非主菜单场景且确实需要加载存档时才加载
+            string currentScene = SceneManager.GetActiveScene().name;
+            if (!currentScene.Contains("Menu") && !currentScene.Contains("Main"))
+            {
+                LoadGame();
+            }
+            // 主菜单场景下 gameData 为空是正常行为，不输出警告
         }
     }
 
@@ -264,7 +269,6 @@ public class SaveManager : MonoBehaviour
             Debug.LogError("保存游戏失败: " + e.Message);
         }
     }
-    // ���ģ�����һ�������������õ������������ʱ���벢���̼�������
     public void RegisterSaveManager(ISaveManager saveManager)
     {
         if (saveManager == null)

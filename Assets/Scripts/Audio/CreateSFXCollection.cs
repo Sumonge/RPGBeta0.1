@@ -1,6 +1,6 @@
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
-using System.Collections.Generic;
 
 public class CreateSFXCollection : Editor
 {
@@ -16,3 +16,4 @@ public class CreateSFXCollection : Editor
         Debug.Log("已创建 SFX Collection: " + path);
     }
 }
+#endif

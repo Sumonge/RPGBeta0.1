@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour,ISaveManager
 {
@@ -24,15 +25,18 @@ public class UI : MonoBehaviour,ISaveManager
     public UI_CraftWindow craftWindow;
 
     [SerializeField] private UI_VolumeSlider[] volumeSettings;
+    [SerializeField] private UnityEngine.UI.Button saveAndExitButton;
 
     private void Awake()
     {
-        SwitchTo(skillTreeUI);//��Ҫ�ȴ򿪼��������棬������ȷ���ü����������ϼ���ͼ��� tooltip ������
+        SwitchTo(skillTreeUI);
 
         fadeScreen.gameObject.SetActive(true);
     }
     void Start()
     {
+        if (saveAndExitButton != null)
+            saveAndExitButton.onClick.AddListener(SaveAndExit);
 
         SwitchTo(inGameUI);
 
@@ -57,10 +61,11 @@ public class UI : MonoBehaviour,ISaveManager
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // �ر����в˵�
+            if (inGameUI != null && inGameUI.activeSelf)
+                return;
+
             SwitchTo(null);
 
-            // �������п��ܵ�����ʾ�� UI Ԫ�أ�tooltip / craft window��
             if (itemToolTip != null)
                 itemToolTip.gameObject.SetActive(false);
 
@@ -154,6 +159,27 @@ public class UI : MonoBehaviour,ISaveManager
     public void RestartGameButton()
     {
         GameManager.instance.RestartGame();
+    }
+
+    public void SaveAndExit()
+    {
+        SaveManager.instance.SaveGame();
+        StopAllAudioSources();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    private void StopAllAudioSources()
+    {
+        // 停止场景中所有 AudioSource
+        AudioSource[] allAudio = FindObjectsOfType<AudioSource>();
+        foreach (AudioSource audio in allAudio)
+        {
+            if (audio.isPlaying)
+            {
+                Debug.Log("Stopping audio: " + audio.gameObject.name);
+                audio.Stop();
+            }
+        }
     }
 
     public void LoadData(GameData _data)

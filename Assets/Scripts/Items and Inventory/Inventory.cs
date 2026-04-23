@@ -393,14 +393,12 @@ public class Inventory : MonoBehaviour, ISaveManager
         {
             itemDataBase.AddRange(resourcesItems);
             #if UNITY_EDITOR
-            Debug.Log($"从Resources/Data加载了 {resourcesItems.Length} 个物品数据");
             #endif
         }
         else
         {
             #if UNITY_EDITOR
-            // 如果在Resources中没找到，在编辑器中使用AssetDatabase作为回退
-            Debug.LogWarning("未在Resources/Data目录中找到物品数据，使用AssetDatabase回退。建议将物品数据移动到Resources/Data目录以确保运行时可用。");
+
 
             string[] assetNames = UnityEditor.AssetDatabase.FindAssets("", new[] { "Assets/Data" });
 

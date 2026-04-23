@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class PlayerItemDrop : ItemDrop
 {
@@ -21,7 +20,7 @@ public class PlayerItemDrop : ItemDrop
             if(Random.Range(0,100)<=chanceToLooseItems)
             {
                 DropItem(item.data);
-                inventory.UnequipItem(item.data as ItemData_Equipment);//Î¥·´foreachÖ±½ÓÐÞ¸ÄÊý×é£¬¿ÉÓÃtolistÑ­»·»òÕßÊ¹ÓÃforÑ­»·µ¹Ðò±éÀú
+                inventory.UnequipItem(item.data as ItemData_Equipment);//Î¥ï¿½ï¿½foreachÖ±ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½tolistÑ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½forÑ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             }
             
         }
